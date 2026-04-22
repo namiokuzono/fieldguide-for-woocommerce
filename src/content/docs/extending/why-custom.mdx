@@ -1,0 +1,24 @@
+---
+title: "Why Build Your Own Plugin"
+description: "When a custom plugin is better than hunting for an extension that half-fits your needs."
+sidebar:
+  order: 51
+---
+
+import Callout from '@components/Callout.astro';
+
+The WooCommerce extension ecosystem is vast. There are thousands of plugins for almost anything. So why would you ever write your own?
+
+**Because most extensions do too much.** You need one small thing — add a custom field to checkout, modify how order emails render, auto-apply a discount for a specific customer role — and the extension that does it also does forty other things you don't need. Each of those forty things is code running on your site, potential conflicts, potential performance cost, and a dependency on someone else's update schedule.
+
+**Because extensions introduce dependencies.** Every third-party plugin is a relationship. You depend on the developer to maintain compatibility with new WooCommerce versions, to not abandon the project, to not introduce bugs in updates. A custom plugin that does exactly one thing — your thing — has no dependency except WooCommerce itself.
+
+**Because sometimes the extension doesn't exist.** Your business has a specific workflow, a specific integration need, a specific pricing logic that no off-the-shelf plugin handles. You've searched, you've asked, and the answer is "use this plugin plus this other plugin plus some custom CSS plus a code snippet in functions.php." At that point, one clean custom plugin is better than a Frankenstein stack.
+
+**The honest tradeoff:** Custom code requires someone who can write and maintain it. If that's you, great. If you're using AI tools like Claude Code to build it, you still need to understand what the code does at a conceptual level — enough to troubleshoot, update, and explain it. If you have no technical capacity at all, extensions are still the safer path.
+
+<Callout type="tip" label="The decision">
+**Use an extension when:** The functionality is complex, actively maintained, widely used, and the extension does what you need without significant bloat. Subscriptions, Bookings, Memberships — these are better as extensions because they're massive feature sets with ongoing edge cases.
+
+**Build custom when:** The need is specific and small. Custom checkout field. Modified email template. Specific discount logic. Auto-status change based on a condition. API integration with your specific warehouse system. These are "50–200 lines of code" problems that don't warrant a plugin dependency.
+</Callout>

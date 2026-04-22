@@ -1,0 +1,18 @@
+---
+title: "Performance Problems"
+description: "\"WooCommerce is slow.\" Usually it's not WooCommerce."
+sidebar:
+  order: 311
+---
+
+import Callout from '@components/Callout.astro';
+
+**Frontend vs backend:** Customer-facing site slow → likely theme, unoptimized images, or frontend JS. Admin slow → likely plugins, database bloat, or hosting limits.
+
+**Diagnostics:** Update everything. Disable unnecessary plugins, especially data-sync tools (POS, CRM, inventory sync) that run background processes. Check theme optimization docs. Configure caching properly. Optimize images. Install Query Monitor to identify slow queries. Talk to your host about resources.
+
+**Hosting matters.** WooCommerce is database-heavy. A $5/month shared plan runs it technically but struggles with real traffic and plugins. Limited PHP workers, low memory, slow disk I/O — no plugin optimization compensates for inadequate hosting.
+
+<Callout type="field" label="From the field">
+Data-sync plugins are the silent killers. A plugin syncing inventory with Amazon, pushing orders to a CRM, or connecting to a POS — these run continuous background processes via Action Scheduler. One is fine. Three or four simultaneously can bring a mid-tier host to its knees. Check WooCommerce → Status → Action Scheduler to see what's running.
+</Callout>

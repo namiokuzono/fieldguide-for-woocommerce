@@ -1,0 +1,36 @@
+---
+title: "Checkout: Block vs Classic"
+description: "The transition from shortcode-based checkout to Block Checkout — what's different, what breaks, and how to decide which to use."
+sidebar:
+  order: 28
+---
+
+import Callout from '@components/Callout.astro';
+
+WooCommerce has two checkout systems, and the transition between them is one of the most significant changes in WooCommerce's recent history.
+
+**Classic Checkout** uses WordPress shortcodes — `[woocommerce_checkout]` on a page. It's been around since the beginning and virtually every WooCommerce plugin, theme, and gateway was built to work with it. It's stable, well-understood, and has years of ecosystem compatibility. Custom checkout fields, layout modifications, and conditional logic plugins all target Classic Checkout's hook system.
+
+**Block Checkout** is the new system, built on WordPress's block editor (Gutenberg). It's a React-based checkout experience that's faster, more modern-looking, and better supports newer payment methods (Apple Pay, Google Pay express checkout buttons). New WooCommerce installations now default to Block Checkout.
+
+**The compatibility gap:** Here's the problem. Block Checkout uses a completely different rendering and hook system than Classic. Plugins that add fields to Classic Checkout, modify the checkout layout, or inject custom logic at specific points in the checkout flow — many of them don't work with Block Checkout. They weren't built for it. The plugin authors are catching up, but as of right now, a significant number of plugins still only support Classic.
+
+**How to know if your plugins are compatible:** WooCommerce shows an "Incompatible extensions" notice in the editor when you're using Block Checkout. It scans your installed plugins and flags the ones that register Classic Checkout hooks but don't have Block Checkout equivalents. This isn't perfect — some plugins work fine despite the warning, and some fail silently without it — but it's a reasonable first check.
+
+**How to switch:** You can revert to Classic Checkout by replacing the Block Checkout block with the shortcode `[woocommerce_checkout]` on your checkout page. And vice versa. It's not a one-way door — you can go back and forth. But test thoroughly after switching, because your checkout is the most critical page on your store.
+
+**Which one to use:**
+
+If you're starting a new store with no legacy plugins, use Block Checkout. It's where WooCommerce is headed, and starting there saves a migration later.
+
+If you have an existing store with custom checkout fields, conditional logic plugins, or payment gateways that you haven't tested with Block Checkout — stay on Classic until you've verified compatibility for every plugin that touches your checkout. A broken checkout costs you money.
+
+If you're an agency building for clients, test Block Checkout compatibility as part of your plugin evaluation process (see Part 4). Don't assume a plugin works with Block Checkout just because it's recent — many popular plugins still don't support it fully.
+
+<Callout type="field" label="From the field">
+The most common checkout support case right now is a third-party payment gateway that works on Classic but fails silently on Block Checkout. The merchant upgraded WooCommerce, the checkout page switched to Block, and their payment plugin stopped rendering its fields. Customers see no payment options and can't complete orders. The fix is usually reverting to Classic Checkout until the payment plugin adds Block support. Always check checkout after any WooCommerce update — and test in a staging environment first.
+</Callout>
+
+<Callout type="gap" label="Honest gap">
+The Block Checkout transition is necessary for WooCommerce's future, but the ecosystem isn't fully there yet. Many widely-used plugins — especially checkout field editors, payment gateways, and custom order plugins — still only support Classic. WooCommerce is pushing Block as the default, but the ecosystem's migration is a trailing indicator. For merchants, this creates a tension: use the modern system and potentially lose plugin functionality, or stay on Classic and eventually face a forced migration. There's no clean answer right now.
+</Callout>

@@ -1,0 +1,12 @@
+---
+title: "Cart & Checkout Failures"
+description: "\"Can't add to cart.\" \"Variation unavailable.\" Almost always a conflict."
+sidebar:
+  order: 33
+---
+
+**"Variation cannot be added to cart"** is nearly 100% caused by a plugin or theme conflict. The quick path: Settings → Permalinks → Save. If that doesn't help, full conflict testing. Also verify the product actually has generated variations — not just attributes. This is the most common variable product setup mistake.
+
+**Payment failures at checkout:** First question — Block Checkout or Classic? Many gateways still only support Classic. If customers see no payment options, switch to Classic as a diagnostic step. If payment works on Classic but not Block, the gateway plugin needs an update.
+
+For payment declines (form renders but payment fails), check order notes — the gateway logs the specific decline reason. Insufficient funds, expired card, fraud block — these are between the customer, their bank, and the processor, not WooCommerce.

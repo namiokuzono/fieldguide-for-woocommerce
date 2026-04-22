@@ -1,0 +1,37 @@
+---
+title: "Memberships"
+description: "Gated access to content, products, or discounts based on membership plans. Often confused with Subscriptions — they solve different problems and usually need each other."
+sidebar:
+  order: 111
+---
+
+import Friction from '@components/Friction.astro';
+import Callout from '@components/Callout.astro';
+
+<Friction level={4} />
+
+WooCommerce Memberships (paid extension) is an access control system. It lets you create membership plans that grant access to specific content, products, or discounts. "Gold members can see these wholesale prices." "Premium members can access this course library." "VIP members get free shipping."
+
+**The Subscriptions/Memberships confusion:** These two extensions solve different problems and almost everyone muddles them at first.
+
+**Subscriptions** = billing. It handles *when and how* customers are charged on a recurring basis.
+
+**Memberships** = access. It handles *what* customers can see, buy, or discount based on their membership status.
+
+In practice, most membership sites need both: Subscriptions to handle the monthly/yearly charge, and Memberships to gate the content. You create a Subscription product, link it to a Membership plan, and when someone subscribes, they get the membership. When they cancel, the membership ends. They work together, but they're configured separately, and understanding which extension controls which behavior is half the battle.
+
+**Content restriction:** Memberships can restrict access to pages, posts, products, and even specific product categories. You can set up content dripping — "this lesson becomes available 7 days after membership starts, this one after 14 days." The drip system is tied to the membership start date, not calendar dates.
+
+**Purchasing restrictions:** You can make certain products only purchasable by members. You can also make products *visible* to everyone but only *purchasable* by members — useful for showing non-members what they're missing. Or fully hidden from non-members.
+
+**Member discounts:** Percentage or fixed discounts that apply automatically at checkout for members. These stack with (or conflict with) coupons and sale prices in ways that aren't always intuitive. The interaction between member discounts, sale prices, and coupon codes is one of the most common support cases for Memberships.
+
+**Where it gets hard:** The relationship between membership plans, subscription products, user roles, and content restriction rules is a four-dimensional puzzle. Adding multiple membership tiers (Bronze, Silver, Gold) with different access levels, different discounts, and different subscription prices means configuring all four systems in parallel. Nothing about this is plug-and-play. It requires planning before you build, or you'll be rebuilding after you launch.
+
+<Callout type="field" label="From the field">
+The most common Memberships support case isn't technical — it's conceptual. Merchants buy Memberships expecting it to handle billing (that's Subscriptions). Or they buy Subscriptions expecting it to gate content (that's Memberships). By the time they reach support, they've already configured the wrong extension for what they want. If you're building a membership site: plan the billing model, the access model, and the content model *on paper* before you install anything.
+</Callout>
+
+<Callout type="edge" label="Edge case">
+Discount stacking: if a Gold member (10% discount) buys a product that's already on sale (20% off) and uses a coupon (additional $5 off) — what price do they pay? The answer depends on your settings, and the default behavior may not be what you expect. Memberships can be set to apply discounts on top of sale prices or to exclude sale items. Test every discount scenario before launch.
+</Callout>

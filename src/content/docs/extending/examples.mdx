@@ -1,0 +1,16 @@
+---
+title: "Real Examples: Small Plugins That Replace Extensions"
+description: "Actual use cases where a custom plugin is the right call."
+sidebar:
+  order: 55
+---
+
+**Custom checkout field:** "Add a 'Company PO Number' field to checkout for B2B customers." Instead of installing a checkout field editor plugin (which adds a whole UI for managing unlimited custom fields, loads admin scripts, and may conflict with Block Checkout), write a 30-line plugin that adds one field using the `woocommerce_after_order_notes` hook, validates it, and saves it to order meta. Done. No dependency, no bloat, works with both Classic and Block Checkout if coded correctly.
+
+**Auto-apply coupon:** "Apply a 10% discount automatically when cart total exceeds $100." A plugin that hooks into `woocommerce_before_calculate_totals`, checks the cart total, and applies or removes a coupon programmatically. No UI needed — the logic is the logic. About 20 lines of code.
+
+**Custom order status email:** "Send a specific email when order status changes to 'Ready for Pickup' (a custom status)." This requires registering the custom status and adding a WooCommerce email class. It's more code — maybe 80–100 lines — but it's a single plugin that does exactly one thing, versus installing a "custom order status" plugin plus a "custom email" plugin plus hoping they work together.
+
+**REST API extension:** "Include custom product metadata in the REST API response so our warehouse system can read it." A plugin that hooks into `woocommerce_rest_prepare_product_object` and adds your custom fields to the API output. Ten lines. The alternative — installing an "API customizer" plugin — is overkill.
+
+**Conditional free shipping:** "Free shipping on orders over $75, but only for domestic, and only if no items in the cart are in the 'Heavy' shipping class." This is specific enough that no extension handles it exactly. A plugin that hooks into `woocommerce_package_rates` and applies the logic directly is cleaner than configuring three different shipping rules and hoping they interact correctly.

@@ -1,0 +1,30 @@
+---
+title: "Tax: US Sales Tax & Nexus"
+description: "The concept of nexus, how automated tax works, when $0 tax is correct, and the setup that fixes the most common tax confusion."
+sidebar:
+  order: 24
+---
+
+import Callout from '@components/Callout.astro';
+
+US sales tax is complicated because it's governed by state and local jurisdictions, not the federal government. There are roughly 13,000 tax jurisdictions in the US, each with potentially different rates and rules. WooCommerce gives you two approaches: automated tax or manual rates.
+
+**Nexus** is the concept that determines whether you're required to collect sales tax in a given state. You have nexus in a state if you have a physical presence there (office, warehouse, employees) or if you exceed that state's economic nexus threshold — typically $100,000 in sales or 200 transactions into that state in a year. If you have nexus in Iowa but not in New Mexico, you collect Iowa sales tax from Iowa buyers but $0 from New Mexico buyers.
+
+**WooCommerce Tax (automated)** uses a tax rate service to automatically calculate the correct rate based on the customer's address. It handles the complexity of city-level and county-level rate variations. You enable it, and it works — mostly.
+
+**The $0 tax situation that isn't a bug:** This is the single most common tax support case. A merchant enables automated tax, places a test order from a state where they don't have nexus, and gets $0 tax. They panic. "Tax isn't working!" But it is working — correctly. Automated tax only calculates tax for your nexus locations. If your shop is in Iowa and a customer orders from California, and you haven't established nexus in California, the tax is correctly $0.
+
+**How to fix it when you do need to collect in your nexus state:** Here's the part the docs make unnecessarily confusing. If automated tax returns $0 for orders from your own state, you likely need to add a **Standard Tax Rate** manually. Go to WooCommerce → Settings → Tax → Standard Rates, and add a rate for your nexus state. You can use an asterisk (`*`) in the state field as a wildcard to apply to all states, and automated tax will override it for states where it has jurisdiction-specific data. For your nexus state specifically, add the correct rate. After that, orders from your nexus location should calculate correctly.
+
+**Tax classes:** WooCommerce supports multiple tax classes — Standard, Reduced Rate, Zero Rate — for products that are taxed differently. Some states tax clothing differently than electronics. Food is often exempt or reduced. If you sell across product categories with different tax treatment, you assign each product to the appropriate class.
+
+**An important disclaimer:** WooCommerce and this guide cannot give you tax advice. Tax law is complex, jurisdiction-specific, and changes frequently. The setup described here reflects general patterns that apply to most US-based merchants. For your specific business, consult a tax professional or use a dedicated tax compliance service (Avalara, TaxJar) that handles nexus determination, rate calculation, and filing.
+
+<Callout type="field" label="From the field">
+Here's the mental model that helps merchants understand this: Automated tax isn't "calculating tax on everything." It's calculating tax *where you're legally required to collect it*, based on your nexus. If the result is $0, the system is probably telling you that you don't have a collection obligation for that jurisdiction. The question isn't "is my tax broken?" — it's "do I have nexus there?" That's a legal and business question, not a WooCommerce question.
+</Callout>
+
+<Callout type="edge" label="Edge case">
+**Digital goods tax in the US varies by state.** Some states tax digital products (downloads, SaaS, streaming). Some don't. Some only tax certain types. If you're selling a mix of physical and digital products, you may need different tax classes for each. And automated tax doesn't always distinguish correctly between digital product types — a "digital good" and a "digital service" can be taxed differently in the same state.
+</Callout>

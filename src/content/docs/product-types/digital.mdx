@@ -1,0 +1,33 @@
+---
+title: "Downloadable & Virtual Products"
+description: "Files, digital access, and services. Two flags that do different things — and you often need both."
+sidebar:
+  order: 16
+---
+
+import Friction from '@components/Friction.astro';
+import Callout from '@components/Callout.astro';
+
+<Friction level={2} />
+
+This is where WooCommerce makes a distinction that confuses almost everyone at first: **"Virtual" and "Downloadable" are two separate checkboxes**, and they do different things.
+
+**Virtual** means "this product doesn't ship." Checking this box removes the shipping fields from the product editor and tells WooCommerce not to calculate shipping for this item at checkout. A consulting session is virtual. A warranty add-on is virtual. An online course is virtual.
+
+**Downloadable** means "this product delivers a file." Checking this box reveals the file upload area where you attach the files customers receive after purchase. An ebook is downloadable. A design template is downloadable. A software installer is downloadable.
+
+**Most digital products need both boxes checked.** An ebook is virtual (no shipping) AND downloadable (file delivery). A coaching session is virtual but NOT downloadable (no file). A physical product that comes with a digital bonus might be downloadable but NOT virtual (still needs to ship).
+
+**Download limits and expiry:** You can set how many times a customer can download their file and how many days the link stays active. These settings exist per-product and also globally in WooCommerce settings. The per-product setting overrides the global one if set.
+
+**Auto-complete behavior:** When a product is both virtual and downloadable, WooCommerce can auto-complete the order after payment — skipping "Processing" and going straight to "Completed." This is configured in settings and is on by default. It makes sense for pure digital products but catches people off guard if they have a mixed cart (physical + digital items) where the digital item auto-completes the whole order before the physical item ships.
+
+**File delivery:** WooCommerce serves files through a redirect or a force-download method. Force-download goes through PHP, which means your server's memory limit and execution time affect large file delivery. If you're selling a 2GB video file, the PHP-based delivery will likely timeout. For large files, you need to use an external storage service or a redirect-based delivery method.
+
+<Callout type="gap" label="Honest gap">
+WooCommerce has no native license key system. If you're selling software and need to issue unique license keys per purchase, you need an extension like Software License Manager or a custom integration. There's also no built-in drip content, course platform, or gated access system — those all require extensions (LearnDash, Sensei, etc.) or a Memberships setup (section 1.11).
+</Callout>
+
+<Callout type="edge" label="Edge case">
+Tax rules for digital goods are different from physical goods in many jurisdictions. In the EU, digital products are always taxed at the buyer's location, regardless of where the seller is. In the US, digital goods taxation varies by state — some states tax them, some don't, and some only tax certain types. If you're selling digital products internationally, you can't just copy your physical product tax setup. See the Tax sections for details.
+</Callout>

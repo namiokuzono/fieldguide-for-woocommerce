@@ -1,0 +1,60 @@
+---
+title: "KYC, MCC Codes & Account Verification"
+description: "The invisible layer beneath payments. Get this wrong and your money stops moving — or never starts."
+sidebar:
+  order: 22
+---
+
+import Callout from '@components/Callout.astro';
+
+Before your payment gateway lets you accept a single dollar, it needs to know who you are and what you sell. This is **KYC** — Know Your Customer — and it's a legal requirement for every payment processor. Stripe, PayPal, Square, all of them. They verify your identity, your business registration, your bank account, and your business type before enabling payouts.
+
+Most merchants treat the KYC onboarding as a signup form they click through as fast as possible. This is a mistake that comes back to haunt them — sometimes weeks later, sometimes during a critical sales period.
+
+**Why accurate information matters from day one:**
+
+Payment processors don't just verify you at signup. They perform **ongoing reviews** of your account, your transaction patterns, and your business details. If the information you entered doesn't match what they observe — your website sells heating equipment but you told them you sell digital educational content — that mismatch triggers a review. Reviews can result in held payouts, suspended accounts, or required documentation requests, all of which happen at the worst possible time.
+
+**Merchant Category Codes (MCC):** Every payment processor assigns your account an MCC — a four-digit code that classifies what type of business you are. Code 5732 is "Electronics Stores." Code 5815 is "Digital Goods." Code 5411 is "Grocery Stores." This code isn't just administrative — it affects your transaction fees, your chargeback rules, your risk classification, and in some cases which payment methods are available to you.
+
+The MCC is typically assigned based on what you tell the processor during onboarding. If you describe your business vaguely or inaccurately, you get the wrong code. A wrong MCC can mean higher fees (some categories have higher processing rates), restricted payment methods (certain local payment methods require specific MCCs), or compliance issues (regulated industries like gambling, adult content, or financial services have specific MCC requirements).
+
+**Changing your MCC after the fact** is possible but not simple. It typically requires contacting the payment processor's support team (not your gateway plugin's support — the actual processor like Stripe), explaining what your business actually does, providing documentation, and waiting for review. If your business model straddles multiple categories — you sell both physical products and digital education — the processor needs to understand which is primary. This back-and-forth can take days to weeks.
+
+**Account verification holds:** If the processor can't verify your identity, your business, or your bank account, they hold your payouts. This can happen at signup or months later during a periodic review. The merchant sees orders coming in, sees "payment captured" in WooCommerce, but no money arrives in their bank. They contact WooCommerce support. WooCommerce support says the payment was captured successfully. The money is sitting with the processor, waiting for the merchant to complete verification. The fix is always the same: go to your processor's dashboard and complete whatever verification step is pending. But the panic is real.
+
+**What to get right during onboarding:**
+
+**Business name and registration:** Use your legal business name exactly as registered. Not a DBA, not a nickname, not a different capitalization. The processor may cross-reference with government business registries.
+
+**Business type / description:** Be specific and accurate about what you sell. "We sell digital educational materials about home energy systems" is better than "e-commerce." If your business model is complex or spans multiple categories, describe the primary activity that will generate the most transaction volume through this specific account.
+
+**Personal identity:** The business owner or authorized representative will need to provide government ID, sometimes proof of address, and in some jurisdictions a tax ID number. This verifies you're a real person with legal authority over the business. Don't rush this — incomplete or mismatched documents cause verification failures.
+
+**Bank account:** The bank account must be in the same name as the business (or the individual for sole proprietors). Mismatched names between the payment processor account and the bank account is the single most common cause of payout failures.
+
+**Website URL:** The processor will review your website. They're checking that the site matches what you described, has visible contact information, has a privacy policy and terms of service, and clearly describes what's being sold. A blank or under-construction site during onboarding can delay or block approval.
+
+<Callout type="field" label="From the field">
+I've seen merchants lose weeks of revenue because they entered their business details carelessly during onboarding. One case: a company that sells both construction services and digital education materials. They set up WooPayments for selling e-books, but their website prominently featured construction services. The processor flagged the mismatch, held payouts, and required clarification about what exactly would be processed through the account. The resolution took multiple rounds of back-and-forth between the merchant, the WooCommerce support team, and Stripe — clarifying that the account would only process digital product sales, not construction billing. The correct MCC was eventually assigned, but the merchant lost weeks of access to their funds. All of this could have been avoided by being precise during setup.
+</Callout>
+
+<Callout type="edge" label="Edge case">
+**Regional payment method requirements:** Some local payment methods (like Przelewy24 in Poland, iDEAL in the Netherlands, or certain BNPL providers) have their own MCC requirements. A payment method might work fine with MCC 5815 but not with 5732 — or vice versa. If you're selling internationally and offering local payment methods, verify that your MCC is compatible with each method you enable. The payment processor's documentation usually lists MCC restrictions per payment method, but merchants rarely read this before encountering a "payment method unavailable" error.
+</Callout>
+
+<Callout type="gap" label="Honest gap">
+WooCommerce doesn't surface any KYC or MCC information in its admin. Your payment processor account status, verification requirements, and MCC assignment are all managed in the processor's own dashboard (Stripe Dashboard, PayPal Business settings, etc.) — completely outside of WooCommerce. When a merchant's payouts are held, WooCommerce shows no warning. The order says "Payment complete." The merchant assumes everything is fine until they check their bank account. There's no in-admin notification that says "your processor needs you to complete verification." You have to proactively monitor your processor dashboard.
+</Callout>
+
+<Callout type="tip" label="Before you go live">
+**1.** Complete ALL verification steps in your processor's dashboard. Don't skip "optional" steps — they often become mandatory later.
+
+**2.** Verify your MCC matches your actual business activity. If you're unsure, contact the processor's support before your first sale, not after.
+
+**3.** Ensure your website accurately reflects what you sell, has contact info, and has legal pages (Privacy Policy, Terms). The processor will review it.
+
+**4.** Confirm your bank account name matches your business name on the processor account.
+
+**5.** Set up processor dashboard notifications (email or mobile) so you're alerted to verification requests, disputes, or payout holds immediately — don't wait to discover them.
+</Callout>

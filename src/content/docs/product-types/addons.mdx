@@ -1,0 +1,31 @@
+---
+title: "Product Add-Ons"
+description: "Custom fields at checkout — engraving text, gift wrapping, color preferences. Flexible. But does not track stock."
+sidebar:
+  order: 17
+---
+
+import Friction from '@components/Friction.astro';
+import Callout from '@components/Callout.astro';
+
+<Friction level={2} />
+
+Product Add-Ons (the official Woo extension) lets you attach custom input fields to any product: text fields, checkboxes, dropdowns, file uploads, color swatches. Each add-on option can have a flat fee or a percentage-based price adjustment.
+
+The use case is personalization and extras. "Add gift wrapping for $5." "Enter your engraving text." "Upload your logo for the custom print." These are options that modify the order but aren't variations in the traditional sense.
+
+**Here's the critical thing most people don't realize until it's too late: Product Add-Ons does not track stock on add-on options.**
+
+If you offer five ribbon color choices as add-ons, and you run out of red ribbon, there's no way within the Add-Ons extension to mark "red ribbon" as out of stock. You'd have to manually remove the option or add a note. There's no inventory number counting down.
+
+This is fine for things like text engraving (unlimited "stock" of the ability to engrave). It's a problem for things like physical extras with limited supply.
+
+**The distinction that matters:** If the options change the product in a way that requires separate inventory tracking, you need *variations*, not add-ons. If the options are customizations that don't have an inventory dimension, add-ons are correct.
+
+<Callout type="tip" label="Decision guide">
+**Use Add-Ons when:** the customer is providing custom input (text, upload, selection) that doesn't have limited physical stock — engraving, monogramming, gift messages, custom sizing notes, warranty add-ons.
+
+**Use Variations when:** the option represents a physically distinct item with its own stock — a different color, size, material, or configuration that you inventory separately.
+
+**The test:** If you could run out of a specific option, it's probably a variation or a bundled product, not an add-on.
+</Callout>

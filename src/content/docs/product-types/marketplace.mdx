@@ -1,0 +1,33 @@
+---
+title: "Marketplace & Multi-Vendor"
+description: "Multiple vendors selling through your store. This is the hardest WooCommerce configuration by far. This is not a product type — it's a business model, and the operational complexity is massive."
+sidebar:
+  order: 115
+---
+
+import Friction from '@components/Friction.astro';
+import Callout from '@components/Callout.astro';
+
+<Friction level={5} />
+
+Let me be direct about this: building a marketplace on WooCommerce is possible. Thousands of people run them. But if you go in expecting the same level of polish as setting up a regular store, you will be frustrated, overwhelmed, and potentially in financial or legal trouble.
+
+A marketplace means multiple independent sellers listing products on your site, where you (the marketplace operator) take a commission and handle the platform. Think Etsy, but on your own infrastructure. The extensions that make this possible — **Product Vendors** (by Woo), **Dokan**, **WCFM Marketplace**, **MultiVendorX** — each take a different approach, but they all face the same fundamental challenges.
+
+**Payouts:** This is where it hurts the most. When a customer pays you $100 for products from three vendors, you need to split that money — $30 to Vendor A, $40 to Vendor B, $20 to Vendor C, and your $10 commission. The payout systems in marketplace plugins range from semi-automated (Dokan with Stripe Connect) to largely manual (Product Vendors). None of them are as clean as you'd expect from a platform that's supposed to handle money. Reconciliation is often manual. Edge cases — partial refunds split across vendors, disputes on multi-vendor orders, currency conversion — are where things get genuinely painful.
+
+**Per-vendor shipping labels:** If Vendor A ships from California and Vendor B ships from New York, and a customer orders from both, you need two shipping labels from two different origins. WooCommerce Shipping (the native label printing) doesn't understand multi-origin orders. You end up with workarounds, manual processes, or expensive third-party integrations. Some marketplace operators avoid this entirely by requiring all vendors to ship through a central warehouse — but that changes your entire business model.
+
+**Stock management across vendors:** Each vendor manages their own inventory through a vendor dashboard. When a product sells, that vendor's stock deducts. This works at the basic level, but synchronization issues arise when vendors also sell on other platforms (Amazon, their own site). There's no native cross-platform inventory sync — you're relying on vendors to keep their numbers accurate, and they won't always.
+
+**Tax responsibility:** Who collects tax? Who reports it? In many jurisdictions, the marketplace operator (you) is responsible for collecting sales tax on behalf of vendors. The marketplace plugins handle the calculation (through WooCommerce's existing tax system), but the *reporting* — filing taxes that break down sales by vendor, by jurisdiction, by product type — is on you. And the tax extensions don't know about marketplace splits.
+
+**Customer service:** When a customer has a problem with a vendor's product, who handles it? You need a process for this. Some marketplace plugins offer a messaging system between vendors and customers, but the quality varies. Dispute resolution is almost entirely manual.
+
+<Callout type="gap" label="Honest gap">
+No WooCommerce marketplace extension provides a complete, polished marketplace experience out of the box. Payouts are fragile and often manual. Per-vendor shipping is a known pain point with no clean solution. Refund flows across marketplace + vendor + gateway are not unified. You will spend significant time on operations and custom development. Budget for it, or consider whether a dedicated marketplace platform (Sharetribe, Arcadier, or even a custom build) is a better fit for your scale.
+</Callout>
+
+<Callout type="field" label="From the field">
+The merchants who succeed with WooCommerce marketplaces are the ones who start small — 5 to 10 trusted vendors, a simple commission structure, a single shipping model — and expand gradually. The ones who struggle are the ones who try to launch with 100 vendors, complex commission tiers, multi-origin shipping, and international payouts on day one. Start simple. Add complexity when you've proven the model works.
+</Callout>

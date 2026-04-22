@@ -1,0 +1,24 @@
+---
+title: "Fraud & Card Testing Attacks"
+description: "What card testing looks like, the severity spectrum, and how to respond at each level."
+sidebar:
+  order: 39
+---
+
+import Callout from '@components/Callout.astro';
+
+Card testing: fraudsters use bots to test stolen card numbers with small transactions. Different names/addresses, often same IP. Goal is identifying "live" cards for larger fraud elsewhere.
+
+**Level 1 — Probing:** A handful of suspicious orders. Same IP, fabricated names. *Response:* Refund successful orders immediately. Monitor for escalation.
+
+**Level 2 — Suspicious transactions:** Multiple orders, same name/email, different cards, geographic scatter. *Response:* Refund all suspicious orders. Enable CAPTCHA on checkout. Enable WooPayments fraud protection / Stripe Radar.
+
+**Level 3 — Full carding attack:** Dozens to hundreds of rapid-fire attempts. *Response:* Everything from Level 2 plus: contact payment processor, consider temporarily disabling checkout, rate-limit at server/Cloudflare level.
+
+**Why refund early:** Fulfilled fraudulent orders result in chargebacks — you lose the product, the money, AND pay a chargeback fee. Proactive refunding before fulfillment avoids all of this.
+
+**Prevention:** CAPTCHA at checkout. WooPayments Advanced Fraud Protection. Stripe Radar rules. Rate-limiting checkout API endpoints.
+
+<Callout type="field" label="From the field">
+There's a subtler pattern: **chargeback testing.** Small, believable orders with real-looking info. Orders go through, products ship. Weeks later, disputes filed as "unauthorized." The fraudster gets products and refunds. If you see a cluster of disputes from orders placed around the same time, that's the pattern.
+</Callout>

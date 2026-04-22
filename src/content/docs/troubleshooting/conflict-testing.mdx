@@ -1,0 +1,28 @@
+---
+title: "The Conflict Testing Method"
+description: "The foundational diagnostic technique. Before anything else — before forum posts, before support tickets — do this."
+sidebar:
+  order: 31
+---
+
+import Callout from '@components/Callout.astro';
+
+The majority of WooCommerce issues that aren't configuration mistakes are caused by **conflicts** — a plugin interfering with another plugin, a theme overriding expected behavior, or a combination of both. Conflict testing isolates the cause.
+
+**Step 0: Set up a staging site.** Never conflict-test on a live store. Your host likely offers staging. If not, use WP Staging.
+
+**Step 1: Permalink refresh.** Settings → Permalinks → Save Changes. You're not changing anything — just regenerating rewrite rules. This fixes a surprising number of "broken page" and "404 on checkout" issues in five seconds.
+
+**Step 2: Deactivate all plugins except WooCommerce** (and your payment gateway if testing checkout). Test the issue. If it's gone, the cause is one of your deactivated plugins.
+
+**Step 3: Reactivate plugins one by one,** testing after each. When the issue returns, you've found the conflict.
+
+**Step 4: If the issue persists with all plugins deactivated,** switch to a default theme (Twenty Twenty-Four). If resolved, your theme is the cause.
+
+**Step 5: If it persists with all plugins off AND a default theme,** the problem is hosting, WordPress core, or WooCommerce core (rare). Check WooCommerce → Status → System Status for red flags and contact hosting.
+
+<Callout type="tip" label="The mental model">
+**Static causes** (plugin/theme conflict): consistent, reproducible, caused by code that runs every time. Conflict testing catches these.
+
+**Dynamic causes** (caching, server load, cron jobs, CDN): intermittent, timing-dependent, affected by external factors. Conflict testing may not catch these — see section 3.10.
+</Callout>

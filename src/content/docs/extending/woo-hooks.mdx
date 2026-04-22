@@ -1,0 +1,24 @@
+---
+title: "Hooks, Filters & the WooCommerce API"
+description: "The fundamental concepts you need to understand — even if AI writes the code for you."
+sidebar:
+  order: 53
+---
+
+import Callout from '@components/Callout.astro';
+
+WooCommerce (and WordPress) is built on a **hooks** system. Hooks are points in the code where you can insert your own functionality without modifying the core files. There are two types:
+
+**Actions** let you *do something* at a specific point. "When an order status changes to completed, do this." "When a product is added to the cart, do this." "Before the checkout form renders, add this HTML."
+
+**Filters** let you *modify data* as it passes through. "When the price is displayed, format it like this." "When the shipping rate is calculated, adjust it by this amount." "When the order confirmation email subject line is generated, change it to this."
+
+You don't need to memorize the hundreds of available hooks. You need to understand the concept: WooCommerce exposes specific moments in its process where you can intervene. The documentation at [developer.woocommerce.com](https://developer.woocommerce.com/) lists them, and AI tools can help you find the right one for your need.
+
+**The WooCommerce REST API** is the other major extension point. It lets external systems read and write WooCommerce data — products, orders, customers, coupons — over HTTP. If you need to connect your store to an inventory system, a custom dashboard, a mobile app, or any external service, the REST API is how. You generate API keys in WooCommerce → Settings → Advanced → REST API, and external systems use those keys to authenticate.
+
+**HPOS (High-Performance Order Storage):** WooCommerce has been migrating order data from WordPress's generic `wp_posts` table to custom order tables for better performance. If you're writing custom code that queries orders, be aware that direct database queries against `wp_posts` may not find orders in newer WooCommerce installations. Use the WooCommerce Order API (`wc_get_orders()`) instead of raw SQL or `WP_Query` for orders. This future-proofs your code.
+
+<Callout type="field" label="From the field">
+The most common custom code requests from merchants: add a custom field to checkout and save it to the order, modify the "Completed order" email to include custom content, auto-apply a coupon based on cart conditions, change the "Add to Cart" button text for specific products, and add custom data to the REST API output for third-party integrations. All of these are 20–50 lines of hook-based code. None of them require a purchased extension.
+</Callout>

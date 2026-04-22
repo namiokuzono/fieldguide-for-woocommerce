@@ -1,0 +1,36 @@
+---
+title: "Stock Management Cheat Sheet"
+description: "Which product types track inventory, which don't, and what surprises you."
+sidebar:
+  order: 116
+---
+
+import Callout from '@components/Callout.astro';
+
+This is the reference table nobody publishes. Every product type handles inventory differently, and the behavior isn't always what you'd expect.
+
+| Product Type | Tracks Stock? | How It Works | Watch Out For |
+| --- | --- | --- | --- |
+| **Simple** | <span class="stock-yes">Yes</span> | Single quantity, decrements per order | Stock status can override quantity manually |
+| **Measured** | <span class="stock-partial">With extension</span> | Requires Measurement Price Calculator for decimal stock | Native WooCommerce doesn't support decimal quantities |
+| **Grouped** | <span class="stock-partial">Children only</span> | No stock on parent; each child product has its own | Parent shows "out of stock" only when ALL children are |
+| **Variable** | <span class="stock-yes">Per variation</span> | Each variation has independent stock, SKU, price | Importing via CSV: orphaned variations if parent SKU is wrong |
+| **External** | <span class="stock-no">No</span> | Not your inventory — links to external site | No orders or sales data generated in your store |
+| **Downloadable** | <span class="stock-partial">Optional</span> | Stock tracking available but rarely used for digital | Auto-complete can finalize mixed-cart orders prematurely |
+| **Add-Ons** | <span class="stock-no">No</span> | Add-on options have NO inventory tracking | Cannot mark an add-on option as "out of stock" |
+| **Bundles** | <span class="stock-yes">Per component</span> | Each bundled product's stock deducts independently | If one component sells out, entire bundle becomes unavailable |
+| **Composite** | <span class="stock-yes">Per selection</span> | Stock deducts based on customer's component choices | Complex composites can have availability race conditions |
+| **Subscriptions** | <span class="stock-yes">Per renewal</span> | Each renewal creates an order that deducts stock | Renewal failures if subscription product goes out of stock |
+| **Memberships** | <span class="stock-no">N/A</span> | Access control system — not a physical product | Discount stacking with sales + coupons can be unexpected |
+| **Bookings** | <span class="stock-partial">Capacity-based</span> | Availability by time slot and resource, not traditional stock | Timezone mismatches between operator and customer |
+| **Content Drip** | <span class="stock-no">N/A</span> | Digital access — no physical inventory | Refund → access revocation may not be automatic across LMS + Woo |
+| **Print on Demand** | <span class="stock-no">Effectively no</span> | Products always "in stock" — POD provider manufactures on demand | Returns have no clean flow; label points to your address, not POD facility |
+| **Marketplace** | <span class="stock-partial">Vendor-managed</span> | Each vendor manages their own stock in their dashboard | No cross-platform sync; vendors must maintain accuracy manually |
+
+<Callout type="info" label="Key insight">
+**Stock status and stock quantity are separate fields in WooCommerce.** This applies across every product type. You can have a quantity of 100 and a status of "Out of stock" — and the product will be unavailable. Plugins, bulk edits, and import tools can set these independently. When stock numbers don't match reality, check both fields.
+</Callout>
+
+<Callout type="gap" label="Honest gap">
+WooCommerce has no native multi-warehouse or multi-location stock tracking. If you fulfill from multiple locations and need to track inventory per-warehouse, you need a third-party solution (custom integration, ERP sync, or a plugin like ATUM). The stock number in WooCommerce is a single global number — it doesn't know *where* your inventory is, only how much you have.
+</Callout>

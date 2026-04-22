@@ -1,0 +1,63 @@
+---
+title: "Advanced Diagnostic Snippets"
+description: "One-time code you run to diagnose a problem, then throw away. The most powerful troubleshooting technique nobody teaches."
+sidebar:
+  order: 57
+---
+
+import Callout from '@components/Callout.astro';
+
+Sometimes conflict testing and log-checking aren't enough. The issue is buried in data — a misconfigured scheduled action, a stuck subscription renewal, orphaned order metadata, or a webhook that's silently failing. You need to *look inside* the system.
+
+The technique: write a small PHP snippet, run it once via WP-CLI, a must-use plugin, or a code snippets plugin, get your answer, and delete it. This is not permanent code. It's a diagnostic tool — like a doctor using an MRI. You don't leave the MRI machine attached to the patient.
+
+**How to run a one-time snippet:**
+
+**Option 1 — WP-CLI (best):** If you have SSH access, run `wp eval-file diagnostic.php` where diagnostic.php is your snippet file. This runs the code in the WordPress context (all functions, hooks, and database access available) without touching the site's actual plugin files. When you're done, delete the file. Clean and safe.
+
+**Option 2 — Code Snippets plugin:** Install the Code Snippets plugin (free). Add your snippet, run it once, then delete or deactivate it. The advantage: no SSH needed, works on any host. The disadvantage: the snippet runs on every page load until you deactivate it, so make sure it's wrapped in a condition or only outputs to the admin.
+
+**Option 3 — Must-use plugin:** Drop a PHP file in `wp-content/mu-plugins/`. It runs automatically on every load — no activation needed. Good for diagnostics that need to catch an intermittent event. Remove the file when done. Be careful: mu-plugins can't be deactivated from the admin, so if your code has a fatal error, you need file access to remove it.
+
+**Real diagnostic scenarios:**
+
+**Stuck scheduled actions:** WooCommerce relies heavily on Action Scheduler for background processing — subscription renewals, webhook deliveries, batch operations, image regeneration, and more. When things "stop working" with no visible error, often a scheduled action is stuck, failed, or backed up.
+
+A diagnostic snippet can query the Action Scheduler tables directly: "Show me all failed actions in the last 24 hours." "Show me all pending actions for the `woocommerce_scheduled_subscription_payment` hook." "Show me actions that have been pending for more than an hour." This surfaces problems that the WooCommerce → Status → Action Scheduler admin page might not make obvious because the volume of actions is too high to scroll through.
+
+**Orphaned subscription metadata:** When a Subscriptions-related issue is hard to trace, a snippet can inspect the subscription object directly — its payment method, retry schedule, last renewal date, related orders — and output a clean summary. This is faster than clicking through the admin for each subscription, and it can be scripted to check hundreds of subscriptions at once.
+
+**Webhook delivery audit:** WooCommerce's built-in webhook system retries failed deliveries, but the logs rotate. A snippet can check the webhook delivery log table and show you: "These 47 webhook deliveries to ShipStation failed in the last week with a 403 response." That tells you Cloudflare or a WAF is blocking the callback — information that would take hours to piece together from logs alone.
+
+**Order data integrity check:** After a migration or import, a snippet can scan for orders with mismatched metadata — orders where the billing email doesn't match the associated user, orders with missing payment method data, or orders where the line item totals don't add up to the order total. This is how you find data corruption early, before a customer finds it for you.
+
+**Extension-specific debugging:** Many WooCommerce extensions store their own data in custom tables or postmeta fields. When the extension's admin UI doesn't surface the problem, a diagnostic snippet can query the raw data directly. For example, Bookings stores availability rules as serialized data in postmeta — a snippet can deserialize and print them in a readable format, revealing why a particular time slot isn't showing as available.
+
+```php
+<?php
+// Run via: wp eval-file check-actions.php
+
+$failed = as_get_scheduled_actions([
+  'status'   => ActionScheduler_Store::STATUS_FAILED,
+  'per_page' => 50,
+  'orderby'  => 'scheduled_date_gmt',
+  'order'    => 'DESC',
+]);
+
+foreach ( $failed as $action ) {
+  $hook = $action->get_hook();
+  $date = $action->get_schedule()->get_date()->format('Y-m-d H:i');
+  $args = json_encode( $action->get_args() );
+  WP_CLI::log( "$date | $hook | $args" );
+}
+
+WP_CLI::success( count($failed) . ' failed actions found.' );
+```
+
+<Callout type="field" label="From the field">
+The Claude Code workflow is perfect for diagnostic snippets. You describe what you're looking for — "I need to find all subscriptions where the payment method is stripe but the Stripe customer ID is missing from the metadata" — and Claude Code writes the query. You run it on staging first, verify the output makes sense, then run it on production. The snippet solves your problem and gets deleted. This is where AI as a tool shines: generating precise, one-time diagnostic code that would take you 30 minutes to write and 2 minutes to run.
+</Callout>
+
+<Callout type="edge" label="Edge case">
+**Never run write operations (UPDATE, DELETE, INSERT) from a diagnostic snippet on production without testing on staging first.** A diagnostic snippet that accidentally modifies order data or subscription status can cause real financial harm. Read-only queries first. Always. If you need to fix data, write the fix, test it on staging, verify the results, and then run it on production with a database backup taken immediately before.
+</Callout>

@@ -1,0 +1,25 @@
+---
+title: "Grouped Products"
+description: "A display wrapper for related products. No stock logic of its own — each child product manages its own inventory."
+sidebar:
+  order: 13
+---
+
+import Friction from '@components/Friction.astro';
+import Callout from '@components/Callout.astro';
+
+<Friction level={1} />
+
+A grouped product is a display mechanism, not a product type in the operational sense. It's a parent page that shows several child products together on one page, each with their own "add to cart" quantity selector. Think "shop the look" — a matching hat, scarf, and gloves shown together, but each sold individually.
+
+The grouped product itself has no price, no stock, no SKU. It's just a container. The child products are regular simple products that exist independently in your catalog. Customers can add any combination of the children to their cart, or buy just one.
+
+**When to use it:** You want to suggest products that go together, but each item stands alone. A skincare routine with cleanser + toner + moisturizer. A furniture set where someone might only want the chair. A set of tools that are also sold individually.
+
+**When not to use it:** If you want a combined price, a bundle discount, or any kind of "these items must be bought together" logic — you don't want Grouped. You want Bundles (section 1.8). This is the confusion that comes up constantly: merchants create a Grouped product expecting it to behave like a bundle with a package price, and then wonder why there's no total price displayed and no way to offer a discount on the set.
+
+**Stock** is managed entirely at the child level. If the scarf sells out, it shows as out of stock within the grouped product page, but the hat and gloves remain available. The grouped parent never shows "out of stock" unless every child is out of stock.
+
+<Callout type="edge" label="Edge case">
+Grouped products don't display a combined price on the shop page or in search results. This means in your product catalog, the grouped product shows a price *range* (e.g., "$12.00 – $35.00") based on the cheapest and most expensive child. If that's not the presentation you want, Grouped isn't the right choice.
+</Callout>

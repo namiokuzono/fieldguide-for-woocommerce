@@ -1,0 +1,28 @@
+---
+title: "Extension Evaluation Framework"
+description: "How to assess a plugin before committing a client's store to it."
+sidebar:
+  order: 44
+---
+
+import Callout from '@components/Callout.astro';
+
+The wrong extension is one of the most expensive agency mistakes. Installation is quick; migrating away after six months of data and configurations is painful. Evaluate first.
+
+**1. Update frequency and changelog quality.** Updated regularly? Changelogs descriptive or vague? 6+ months without an update is a risk.
+
+**2. Support responsiveness.** Check the WordPress.org support forum. How quickly do developers respond? Are answers helpful? For premium plugins, submit a pre-sale question.
+
+**3. Block Checkout compatibility.** If it touches checkout — test it with Block Checkout specifically on staging. Don't assume.
+
+**4. Active installs and reviews.** 100K+ installs with 4.5+ stars means community-tested. 200 installs means early-adopter risk.
+
+**5. Source.** Woo Marketplace = reviewed by Woo, lowest risk. WordPress.org = community-reviewed, free. Third-party sites = highest variability. For client stores, Marketplace is safest.
+
+<Callout type="tip" label="The five-minute evaluation">
+**1.** Last updated? (6+ months → caution)  
+**2.** Changelog mentions your WooCommerce version? (No → test carefully)  
+**3.** Works with Block Checkout? (Unknown → test on staging)  
+**4.** What do 1-star reviews say? (Look for patterns)  
+**5.** If abandoned in a year, how hard to migrate? ("Very" → think twice)
+</Callout>

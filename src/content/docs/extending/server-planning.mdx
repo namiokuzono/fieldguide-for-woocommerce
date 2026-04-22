@@ -1,0 +1,67 @@
+---
+title: "Server Resource Planning for WooCommerce"
+description: "WooCommerce is a write-heavy, scheduled-action-dependent application. Most hosting plans aren't optimized for it. Here's how to estimate what you actually need."
+sidebar:
+  order: 58
+---
+
+import Callout from '@components/Callout.astro';
+
+WooCommerce is not a blog. WordPress was designed for content — read-heavy, cacheable, relatively simple database queries. WooCommerce bolts on ecommerce — which means write-heavy transactions, uncacheable checkout flows, complex database joins across orders/products/customers, and a background processing system (Action Scheduler) that runs constantly.
+
+Most hosting recommendations for WooCommerce are based on WordPress benchmarks. They'll say "2GB RAM, 2 vCPUs" and call it good. For a store with 10 orders a day and 20 products, that's probably fine. For a store processing 200 orders a day with 5,000 products, subscriptions, and three integration plugins syncing data — it's dangerously undersized.
+
+**Why WooCommerce is write-optimized:**
+
+Every checkout creates or updates multiple database rows: the order record, line items, order meta, customer meta, payment transaction records, stock updates, and potentially subscription records. A single checkout can trigger 30–50+ database write operations. Multiply that by concurrent customers and you understand why a database server optimized for reads (which most shared hosting is) struggles under WooCommerce load.
+
+On top of that, Action Scheduler is constantly processing background tasks: sending emails, processing webhook deliveries, running subscription renewals, syncing data with third-party services, and cleaning up expired sessions. Each of these tasks is a database read + write cycle. A busy store with Subscriptions + a CRM sync + a shipping integration might have hundreds of scheduled actions per hour.
+
+**How to estimate your server needs:**
+
+**Step 1: Estimate your write load per hour.**
+
+Take your expected orders per day and divide by your business hours. A store doing 100 orders in an 8-hour business day averages 12.5 orders per hour. But traffic isn't even — peak hours might be 3x average. So estimate peak at ~40 orders/hour.
+
+Each order generates roughly 30–50 database writes. At 40 orders/hour peak, that's 1,200–2,000 database writes per hour just from checkout. Add Action Scheduler tasks (figure 5–10 tasks per order for emails, webhooks, stock sync), and you're at 1,500–2,400 writes/hour at peak.
+
+**Step 2: Factor in background processing.**
+
+Subscriptions: If you have 1,000 active subscribers on a monthly renewal, that's ~33 renewals per day, each triggering the same write volume as a regular order plus subscription-specific metadata updates. If renewals are daily, multiply accordingly.
+
+Data sync plugins: Each sync cycle (inventory update, CRM push, accounting export) generates its own read/write operations. A plugin that syncs 5,000 products hourly with an external system is a significant database load on its own.
+
+Action Scheduler queue depth: Check WooCommerce → Status → Action Scheduler. If your pending actions queue is consistently growing faster than actions are processed, your server can't keep up. This manifests as delayed emails, delayed webhook deliveries, and delayed renewal processing.
+
+**Step 3: Size your resources.**
+
+**PHP Workers:** This is often the bottleneck before RAM or CPU. A PHP worker handles one request at a time. If your checkout takes 3 seconds and you have 4 PHP workers, you can only process 4 concurrent checkouts. The 5th customer waits. For a busy store, 8–16 PHP workers is a reasonable starting point. Shared hosting typically gives you 2–4.
+
+**RAM:** WooCommerce itself needs 256MB minimum PHP memory. With plugins, 512MB is more realistic. Server-level RAM should be at least 2GB for a small store, 4–8GB for medium, and 8–16GB for stores with heavy background processing. MySQL/MariaDB should be allocated enough memory for its buffer pool — ideally large enough to keep your most-accessed tables in memory.
+
+**Database:** WooCommerce benefits significantly from a database server that's optimized for mixed read/write workloads. If your host offers MySQL tuning (adjusting `innodb_buffer_pool_size`, `max_connections`, `query_cache`), use it. If you're on managed hosting that doesn't expose these — you're trusting them to have configured it reasonably. Object caching (Redis or Memcached) offloads repetitive database reads and is one of the single biggest performance improvements for WooCommerce.
+
+**Disk I/O:** SSD (NVMe preferred) is non-negotiable for WooCommerce. Spinning disks cannot keep up with the write volume. If your host still uses HDD storage, switch.
+
+**The caching paradox:** Page caching dramatically improves read performance for product pages, category pages, and the homepage. But WooCommerce's most critical pages — cart, checkout, my-account — *cannot be cached* because they're user-specific and session-dependent. This means your server needs to handle the full uncached load for exactly the pages that matter most (checkout). Cache everything else aggressively, but understand that caching doesn't help your checkout performance.
+
+<Callout type="tip" label="Quick resource estimation">
+**Small store** (up to 30 orders/day, under 500 products, no subscriptions):  
+2GB RAM, 2 vCPU, 4 PHP workers, shared MySQL, object cache optional.
+
+**Medium store** (30–200 orders/day, 500–5,000 products, 1–2 sync plugins):  
+4–8GB RAM, 4 vCPU, 8–12 PHP workers, dedicated or optimized MySQL, Redis object cache, SSD.
+
+**Large/subscription-heavy store** (200+ orders/day, 5,000+ products, subscriptions, multiple integrations):  
+8–16GB RAM, 4–8 vCPU, 12–16+ PHP workers, dedicated database server, Redis, NVMe SSD. Consider separating web and database servers.
+
+**The warning sign:** If your Action Scheduler pending queue is consistently growing, your server is undersized for your workload. Scale up before customers notice.
+</Callout>
+
+<Callout type="field" label="From the field">
+The merchants who hit server limits don't see a clean error message. They see slow checkouts, delayed emails, webhook timeouts (which cause integration failures), and Action Scheduler queues that never clear. It looks like "WooCommerce is broken" when actually the server is drowning. The first diagnostic for any "everything is slow and nothing works" report should be: check PHP worker utilization, check Action Scheduler queue depth, and check MySQL slow query log. Nine times out of ten, one of those three tells you the story.
+</Callout>
+
+<Callout type="edge" label="Edge case">
+**OOM (Out of Memory) kills:** On VPS and cloud hosting, if a process exceeds available RAM, the Linux OOM killer terminates it — usually MySQL, since it's the hungriest process. The symptom: the site goes down completely with a database connection error, then comes back when MySQL auto-restarts (if configured to). If you're on a VPS, monitor memory usage and set MySQL's `innodb_buffer_pool_size` to no more than 50–70% of available RAM, leaving room for PHP, the OS, and Redis. An OOM kill during a checkout surge can corrupt transactions in progress.
+</Callout>

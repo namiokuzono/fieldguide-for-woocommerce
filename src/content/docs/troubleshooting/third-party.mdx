@@ -1,0 +1,22 @@
+---
+title: "\"It's a WooCommerce Problem\""
+description: "When a third-party plugin developer blames WooCommerce. How to identify the real boundary."
+sidebar:
+  order: 32
+---
+
+import Callout from '@components/Callout.astro';
+
+A merchant uses a third-party plugin, something breaks, and the developer says "that's a WooCommerce issue." Sometimes true. Usually not.
+
+**The boundary:** WooCommerce provides products, orders, coupons, shipping, tax, checkout, and the REST API. If the issue is with how a third-party plugin *uses* those systems, that's the plugin developer's responsibility. WooCommerce is a platform — the integration is the plugin developer's job.
+
+**The test:** Does the issue exist with only WooCommerce active? If not, it's not WooCommerce's problem. If the plugin developer insists, ask them to submit a detailed report to the [WooCommerce GitHub repository](https://github.com/woocommerce/woocommerce/issues).
+
+**For POD plugins** (Printful, Printify): these connect to external APIs, sync data, and handle fulfillment through their own services. If sync fails or orders don't pass through, that's their integration.
+
+**General integration troubleshooting:** Check Tools → Site Health. Clear WooCommerce transients (WooCommerce → Status → Tools). Verify WooCommerce is current. For API-heavy plugins, ensure PHP memory is at least 512MB and time limit is 120+. Disconnect/reconnect the integration. Check WooCommerce → Status → Logs for fatal errors.
+
+<Callout type="edge" label="Edge case">
+Some plugins write directly to `wp-config.php`. When you deactivate them, the changes stay — orphaned code that keeps affecting behavior. If conflict testing doesn't resolve an issue after recently removing a plugin, check wp-config.php for leftover constants.
+</Callout>

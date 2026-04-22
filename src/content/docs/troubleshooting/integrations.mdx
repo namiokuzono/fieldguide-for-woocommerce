@@ -1,0 +1,14 @@
+---
+title: "Integrations & the Firewall Problem"
+description: "When Cloudflare, hosting firewalls, or security tools block legitimate connections."
+sidebar:
+  order: 312
+---
+
+Third-party integrations connect via REST API or webhooks. They require your site to be reachable from external servers. When they break, the cause is often something *between* them blocking the connection.
+
+**Cloudflare:** The most common culprit. Firewall rules, bot protection, and security settings block webhook callbacks from payment processors and integration platforms. These look like automated traffic — which is what Cloudflare blocks. Check Cloudflare's firewall event log. Whitelist specific IP ranges for your payment processor.
+
+**Hosting WAFs:** ModSecurity, Imunify360, Sucuri — can block POST requests and API calls. Hosting provider can check their security logs for false positives.
+
+**REST API key failures:** Keys break if the site URL changes (HTTP→HTTPS), the user who generated them is deleted, or a security plugin restricts API access. Check WooCommerce → Settings → Advanced → REST API.

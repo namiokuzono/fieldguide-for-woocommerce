@@ -1,0 +1,22 @@
+---
+title: "Database Mismatches After Migrations"
+description: "When orders show the wrong customer's data after a migration, restore, or staging sync."
+sidebar:
+  order: 38
+---
+
+import Callout from '@components/Callout.astro';
+
+This is a data integrity problem — a customer logs in and sees someone else's order. It almost always follows a migration, backup restore, or staging-to-live push.
+
+**The scenario:** Live site has orders up to #123. You restore from backup where last order was #110. Site continues taking orders: #111, #112. Then you import lost orders from live. Old order #111 overwrites new order #111. Customer B now sees Customer A's data.
+
+**Sequential order number plugins** make this worse by adding another mapping layer that diverges between environments.
+
+**Resolution requires database-level work** — identifying conflicting IDs in `wp_posts` and `wp_postmeta`, checking timestamps, and manually correcting associations. This isn't fixable from the WooCommerce admin.
+
+**Prevention:** Before any migration or restore, note the highest order ID. After, verify no overlap. Never import orders into a live site without checking ID ranges.
+
+<Callout type="field" label="From the field">
+This is rare but devastating — it's a privacy incident. If you're an agency pushing staging to production regularly, add order ID range verification to your pre-push checklist. Five minutes prevents a five-day incident response.
+</Callout>

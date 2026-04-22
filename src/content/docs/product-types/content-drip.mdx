@@ -1,0 +1,29 @@
+---
+title: "Content Drip & Online Courses"
+description: "Selling access to content that unlocks over time. Courses, lesson sequences, gated libraries. WooCommerce can do it — but not alone."
+sidebar:
+  order: 113
+---
+
+import Friction from '@components/Friction.astro';
+import Callout from '@components/Callout.astro';
+
+<Friction level={4} />
+
+Content drip means unlocking content on a schedule — "lesson 1 is available immediately, lesson 2 unlocks after 7 days, lesson 3 after 14 days." This is how most online courses, coaching programs, and gated content libraries work. Students pay once (or subscribe), and content becomes available progressively.
+
+**WooCommerce doesn't do this natively.** WooCommerce can sell a downloadable product (a file), and Memberships can restrict access to pages. But neither provides a built-in drip sequence with timed releases, progress tracking, quizzes, or a student dashboard. You need a Learning Management System (LMS) plugin.
+
+**The main options:**
+
+**Sensei LMS** is Automattic's own learning platform (the same company behind WooCommerce). It integrates with WooCommerce natively — you can sell courses as WooCommerce products, and Sensei handles the lesson structure, drip scheduling, quizzes, and student progress. The integration is tight because they're from the same ecosystem.
+
+**LearnDash** is the most popular WordPress LMS. It has its own WooCommerce integration plugin, supports complex drip schedules, prerequisites between courses, certificates, and group management. It's more feature-rich than Sensei but also more complex to configure.
+
+**Memberships + manual drip:** WooCommerce Memberships (section 1.11) has a built-in content drip feature — you can schedule when specific pages or posts become available relative to the membership start date. For simple "unlock this page after 7 days" scenarios, this works without an LMS. But it lacks progress tracking, quizzes, lesson ordering, or a student-facing dashboard. It's content access, not a course experience.
+
+**The decision:** If you're building a real course with lessons, progress tracking, and quizzes, you need an LMS (Sensei or LearnDash). If you're gating a library of content that unlocks over time without structured progression, Memberships may be sufficient. If you're selling a single downloadable file (an ebook, a PDF guide), you just need a downloadable product — no drip involved.
+
+<Callout type="gap" label="Honest gap">
+The LMS integration layer adds significant complexity. You now have three systems interacting: WooCommerce (handling the sale), the LMS (handling the content), and optionally Memberships or Subscriptions (handling access duration). When a student requests a refund, does their course access revoke automatically? When a subscription lapses, do they lose progress? These cross-system behaviors require careful configuration and testing. None of it is automatic.
+</Callout>

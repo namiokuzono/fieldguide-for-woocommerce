@@ -1,0 +1,38 @@
+---
+title: "Shipping"
+description: "Zones, methods, live rates, and the matching logic that confuses everyone at least once."
+sidebar:
+  order: 23
+---
+
+import Callout from '@components/Callout.astro';
+
+WooCommerce's shipping system is built on **zones**. A shipping zone is a geographic area — a country, a group of states, a set of zip codes — that you assign specific shipping methods to. When a customer enters their address at checkout, WooCommerce checks which zone matches, and shows them only the shipping methods from that zone.
+
+**The matching logic:** WooCommerce evaluates zones *top to bottom* and stops at the **first match**. This is the single most important thing to understand about shipping configuration, and it's the root cause of most "no shipping options available" issues.
+
+If you have two zones that both include the United States — maybe one for "Domestic" with flat rate shipping, and one for "US - Express" with live UPS rates — WooCommerce will only use whichever zone appears first in your zone list. It will never check the second one. The customer will never see options from both.
+
+This means: **don't create overlapping zones.** If you want multiple shipping methods for the same region, put them all in the same zone. One zone for US, with flat rate AND live rate AND free shipping (conditional) all inside it.
+
+**The "Rest of the World" zone:** This is a default zone that matches any address not covered by your other zones. You can't delete it, but you can leave it empty (which means customers from uncovered regions simply won't see shipping options — and can't check out). This is actually useful if you only ship domestically — just don't add any methods to Rest of the World.
+
+**Shipping methods:**
+
+**Flat Rate** — a fixed cost. Simple. You can make it per-order or per-item, and you can use basic math in the cost field (e.g., `10 + ( 2 * [qty] )` for $10 base plus $2 per item). Most small stores start here.
+
+**Free Shipping** — conditional. You can require a minimum order amount, a specific coupon, or both. "Free shipping over $50" is configured here. The gotcha: if you set up Free Shipping as a method in a zone, and the customer qualifies, it shows *alongside* your paid methods unless you configure it to hide the others. The customer might still choose the paid option by accident. There's a WooCommerce setting to hide other methods when free shipping is available.
+
+**Live Rates** (UPS, USPS, FedEx, DHL) — real-time quotes from carriers based on package weight, dimensions, origin, and destination. These require extensions (Woo UPS Shipping, Woo USPS Shipping, etc.) and API credentials from the carrier.
+
+**Shipping classes:** A way to group products that share the same shipping characteristics. "Heavy items," "fragile items," "oversized." You assign a class to products, then set per-class costs within a shipping method. This lets you charge more to ship a 50lb item without raising the rate for a light one.
+
+**Shipping debug mode:** When rates aren't showing and you don't know why, enable this in WooCommerce → Settings → Shipping → Shipping Options. It adds a notice at checkout showing which zone WooCommerce matched and why. This is your first diagnostic tool — always check it before anything else.
+
+<Callout type="edge" label="Edge case">
+**Carrier API credential lifecycle:** UPS, USPS, and FedEx have all migrated from legacy API systems to OAuth 2.0 in the last couple of years. If rates suddenly stop returning, the first thing to check is whether the carrier's API credentials are current and the right permissions are enabled. For UPS, you need both "Rating" and "Authorization" APIs enabled. For FedEx, you need "Address Validation API," "Freight LTL API," and "Rates and Transit Times API." Missing even one permission means no rates — and the error messages from the carriers are often cryptic.
+</Callout>
+
+<Callout type="field" label="From the field">
+"No shipping options available at checkout" accounts for a huge chunk of shipping support cases. The diagnostic path is almost always the same: (1) Is the customer entering a complete address including zip code? (2) Does a zone exist that matches their location? (3) Are there overlapping zones stealing the match? (4) Is shipping debug mode showing which zone was matched? (5) For live rates: are the API credentials valid and is the carrier's service actually available for that origin→destination pair? That sequence solves about 80% of shipping issues.
+</Callout>

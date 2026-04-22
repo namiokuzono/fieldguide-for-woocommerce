@@ -1,0 +1,22 @@
+---
+title: "Maintaining Custom Code"
+description: "Custom plugins aren't \"set and forget.\" Here's what ongoing maintenance looks like."
+sidebar:
+  order: 56
+---
+
+import Callout from '@components/Callout.astro';
+
+**Version control:** Keep your custom plugin in a Git repository — even a private one. This gives you a history of changes, the ability to revert if something breaks, and a foundation for the automated PR workflow if you go that direction. GitHub, GitLab, or even a local repo on your machine.
+
+**WooCommerce updates:** When WooCommerce releases a major update, test your custom plugin on staging before updating production. Major versions can deprecate hooks, change data structures, or alter behavior that your code depends on. This is the same discipline you'd apply to any extension — the difference is you're the developer now, so you're the one who fixes compatibility issues.
+
+**HPOS migration:** If your custom code queries orders using `WP_Query` or direct database queries on `wp_posts`, it will break as WooCommerce completes the migration to custom order tables. Audit your custom code for direct order queries and migrate them to `wc_get_orders()` or the `OrdersTableQuery` class. This is a one-time migration, but it's important.
+
+**Block Checkout:** If your custom code adds fields or modifies the checkout, verify it works with both Classic and Block Checkout. Block Checkout uses a different rendering pipeline — hooks that fire on Classic may not fire on Block. The WooCommerce developer docs have a guide for registering checkout blocks and fields for the Block Checkout system.
+
+**Documentation:** Comment your code. Write a brief README for each custom plugin: what it does, which hooks it uses, what to check when updating WooCommerce. Future you (or whoever inherits the store) will thank present you. If Claude Code generated the code, the conversation where you described the requirement *is* documentation — save it.
+
+<Callout type="field" label="From the field">
+The stores with the healthiest custom code are the ones where someone keeps a simple list: "Custom plugin: my-woo-customizations. Does: adds PO Number field to checkout, auto-applies wholesale discount for role 'wholesale_customer,' sends custom email on status 'ready-for-pickup.' Hooks used: woocommerce_after_order_notes, woocommerce_before_calculate_totals, woocommerce_order_status_ready-for-pickup. Last tested with WooCommerce: 9.2." That's it. One page. The alternative is "there's some custom code somewhere and nobody knows what it does."
+</Callout>

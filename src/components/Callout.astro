@@ -1,0 +1,32 @@
+---
+/**
+ * Callout box — five variants matching the HTML prototype:
+ *   field → teal   (From the field)
+ *   edge  → amber  (Edge case)
+ *   gap   → rose   (Known gap)
+ *   tip   → purple (Tip / decision)
+ *   info  → blue   (General info)
+ * Styled in src/styles/custom.css.
+ */
+interface Props {
+  type: 'field' | 'edge' | 'gap' | 'tip' | 'info';
+  label?: string;
+}
+
+const { type, label } = Astro.props;
+
+const defaultLabels: Record<string, string> = {
+  field: 'From the field',
+  edge: 'Edge case',
+  gap: 'Known gap',
+  tip: 'Tip',
+  info: 'Info',
+};
+
+const text = label ?? defaultLabels[type];
+---
+
+<aside class={`fg-callout fg-callout-${type}`}>
+  {text && <span class="fg-callout-label">{text}</span>}
+  <slot />
+</aside>

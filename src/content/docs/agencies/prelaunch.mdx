@@ -1,0 +1,26 @@
+---
+title: "Pre-Launch Checklist"
+description: "Everything to verify before a store goes live. Missing one of these means lost sales, lost data, or a lost client."
+sidebar:
+  order: 41
+---
+
+**1. Payment gateway is in live mode.** Test/sandbox credentials look similar to live. Place a real (small) test order and verify the charge appears in your processor's live dashboard.
+
+**2. Place a complete test order as a customer.** From the frontend, in incognito, as a new customer. Verify the order appears in WooCommerce, the confirmation email arrives, and payment is captured.
+
+**3. Shipping zones cover all destinations.** Test domestic and international. Check that "Rest of World" is configured or intentionally empty.
+
+**4. Tax is calculating correctly.** Test orders for nexus states and non-nexus states. For EU: test domestic and cross-border. For B2B: test VAT number entry.
+
+**5. Email delivery works.** Test with Gmail, Yahoo, and a corporate domain. If any fail, fix authentication before launch.
+
+**6. SSL is active site-wide.** Every page HTTPS. No mixed content warnings.
+
+**7. Checkout works on mobile.** Actual phone, not resized desktop browser.
+
+**8. Backup is configured AND tested.** Run it, verify it completed, confirm you can restore from it.
+
+**9. Site speed is acceptable.** Homepage, product page, cart — under 3-4 seconds on fresh browser.
+
+**10. Legal pages exist.** Privacy Policy, Terms, Refund Policy — populated and linked from checkout.

@@ -1,0 +1,34 @@
+---
+title: "Using Claude Code to Build Extensions"
+description: "AI as infrastructure for building custom WooCommerce functionality. Not as a magic box — as a tool you direct."
+sidebar:
+  order: 54
+---
+
+import Callout from '@components/Callout.astro';
+
+Here's where things get interesting for people who aren't traditional developers but understand WooCommerce deeply.
+
+**Claude Code** (Anthropic's command-line coding tool) can generate, edit, test, and iterate on WordPress plugin code. You describe what you want in plain language — "I need a plugin that adds a 'gift message' text field to WooCommerce checkout and saves it to the order metadata" — and Claude Code writes the PHP, using the correct WooCommerce hooks, following WordPress coding standards.
+
+**The key insight:** You don't need to know how to write PHP to *direct* the code. But you do need to understand WooCommerce well enough to know *what to ask for* and to *verify the result*. "Add a field to checkout" is a clear, buildable request. "Make my store better" is not. The value you bring is the specificity — knowing exactly what behavior you want, which hooks are involved, and what edge cases to test for.
+
+**The workflow:**
+
+**1. Define the requirement clearly.** "When an order contains only digital products, automatically set the status to Completed. When it contains any physical product, keep it at Processing." This is specific enough for Claude Code to build correctly.
+
+**2. Generate the plugin.** Claude Code creates the PHP file with the correct plugin header, hooks, and logic.
+
+**3. Review the code.** Even if you don't read PHP fluently, you can check: does it hook into the right WooCommerce action? Does it check the conditions I described? Does it have an obvious logic error?
+
+**4. Test on staging.** Install the plugin on a staging site. Test every scenario — the happy path, the edge cases, the mixed cart. Never deploy custom code to production without staging tests.
+
+**5. Iterate.** If the behavior isn't quite right, describe what's wrong to Claude Code. "It's marking orders as Completed even when there's a physical product in the cart — I think it's not checking all line items." Claude Code fixes the logic and you test again.
+
+**What Claude Code is good at:** Writing syntactically correct WordPress/WooCommerce plugin code. Using the right hooks and filters. Following coding standards. Generating code that's readable and well-commented. Iterating quickly on feedback.
+
+**What Claude Code needs you for:** Knowing what the plugin should do. Knowing what WooCommerce behavior to hook into. Knowing what edge cases to test. Knowing whether the result actually works in the context of your store. The AI writes the code; you provide the operational knowledge. That combination is powerful.
+
+<Callout type="edge" label="Edge case">
+AI-generated code can be confidently wrong. It might use a deprecated hook, or generate code that works in WooCommerce 8.x but not 9.x, or miss an edge case you didn't mention. Always test on staging. Always check the WooCommerce developer docs for the specific hooks the code uses. And if the code touches anything related to payments, orders, or customer data — review it carefully or have someone who reads PHP check it.
+</Callout>

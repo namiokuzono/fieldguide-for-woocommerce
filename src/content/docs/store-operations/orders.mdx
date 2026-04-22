@@ -1,0 +1,34 @@
+---
+title: "Orders & Statuses"
+description: "The order lifecycle, what triggers each status change, and the operational details that affect your daily workflow."
+sidebar:
+  order: 27
+---
+
+import Callout from '@components/Callout.astro';
+
+An order in WooCommerce moves through a lifecycle of statuses. Each status triggers specific behaviors — emails send, stock adjusts, download access grants. Understanding the lifecycle isn't academic — it directly affects your operations.
+
+**The lifecycle:**
+
+**Pending Payment** → Customer started checkout but payment isn't confirmed yet. For immediate payment methods (credit card, PayPal), orders pass through this status so quickly you might never see it. For deferred methods (bank transfer, check), orders sit here until you manually confirm payment. Pending orders hold stock but don't deduct it permanently — they'll release stock back if they expire or are cancelled.
+
+**On Hold** → Payment is awaiting confirmation. Some gateways use this for manual verification. Similar to Pending but explicitly flagged for review.
+
+**Processing** → Payment received, order needs fulfillment. This is where the real work happens. For physical products, this means pick, pack, ship. An email goes to the customer confirming payment. An email goes to you (or your admin email) notifying of the new order.
+
+**Completed** → Fulfillment is done. For physical orders, you mark this manually after shipping. For virtual/downloadable products, WooCommerce can auto-complete immediately after payment (configurable). The "Completed order" email goes to the customer, which for downloadable products includes their download links.
+
+**Cancelled** → Order is cancelled, either by the customer (if enabled), by the merchant, or automatically for unpaid orders that exceed the hold period. Cancelled orders restore stock — unless you manually cancelled after already shipping, in which case you've just restocked an item that's already out the door. Be careful with this.
+
+**Refunded** → Money returned to customer. Can be full or partial. Gateway refunds send the money back through the payment processor. Manual refunds just update the status without moving money — you handle the actual refund outside WooCommerce.
+
+**Failed** → Payment was attempted and declined. Stock is not held. No customer email. The order exists as a record but didn't result in a sale.
+
+**Order notes:** Every order has a notes section that automatically logs status changes, payment confirmations, stock adjustments, and refund actions — all timestamped. These are your audit trail. When something seems wrong with an order, check the notes first. They'll tell you exactly what happened and when.
+
+**The auto-complete behavior worth understanding:** When an order contains only virtual and downloadable products, WooCommerce can automatically set the status to Completed upon payment. This makes sense — there's nothing to ship. But if a customer buys a physical product AND a downloadable product in the same order, the auto-complete setting can finalize the entire order before you've shipped the physical item. The customer gets their download link, but you might miss the physical fulfillment because the order looks "done." If you sell mixed carts, be aware of this behavior.
+
+<Callout type="edge" label="Edge case">
+**Stock restoration on cancellation:** When you cancel an order, WooCommerce restores the stock by default. This is correct if the order was cancelled before fulfillment. It's a problem if you cancel an order that was already shipped (maybe a customer complained and you issued a refund + cancellation out of order). Now your stock count says you have one more item than you actually do. Always check whether an order was fulfilled before cancelling — if it was, you may want to refund without cancelling, or manually adjust stock after.
+</Callout>

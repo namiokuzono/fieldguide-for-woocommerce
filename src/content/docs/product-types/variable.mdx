@@ -1,0 +1,35 @@
+---
+title: "Variable Products"
+description: "Size, color, material — products with options that each have their own price, SKU, and stock."
+sidebar:
+  order: 14
+---
+
+import Friction from '@components/Friction.astro';
+import Callout from '@components/Callout.astro';
+
+<Friction level={2} />
+
+This is the product type most merchants graduate to, and it's where WooCommerce starts requiring you to understand its data model a little. A variable product is a single product with multiple *variations*, where each variation can have its own price, SKU, stock, weight, image, and shipping class.
+
+The classic example: a t-shirt in sizes S/M/L/XL and colors Red/Blue/Black. That's one product, but up to 12 variations (4 sizes × 3 colors). Each variation is independently purchasable, independently stocked, and independently priced if you want.
+
+**How it works under the hood:** You first define *attributes* (Size, Color), then generate variations from those attributes. Each variation is stored as its own database entry — it's essentially a simple product that lives inside the parent. This matters because the more variations you create, the more database rows you generate.
+
+**Stock per variation** is the reason most merchants use variable products. If you have 20 of the Red/Medium and 5 of the Blue/XL, you track each separately. When a customer selects Red/Medium, they see that specific variation's availability. This is clean, correct, and exactly what you'd expect.
+
+**Where it gets tricky:**
+
+Performance degrades as variation count grows. Once you're past 50–80 variations on a single product, the product editor slows down noticeably. Past 100+, the frontend AJAX calls that update price and availability when a customer selects options can lag. This isn't a bug — it's the cost of querying that many database rows per product page load.
+
+If you have a product with 5 attributes and 10 options each, that's theoretically 100,000 variations. WooCommerce doesn't stop you from trying to create that, but it will not work in practice. If your product configuration space is that large, you need Composite Products (section 1.9), not variables.
+
+**"Any" attribute matching:** You can set a variation's attribute value to "Any" — meaning it matches any option. This is useful for something like "all sizes are the same price" but it can create ambiguous matches if you're not careful, especially with multiple attributes set to "Any."
+
+<Callout type="field" label="From the field">
+The single most common variable product support case is "I created the attributes but there are no variations." Merchants set up attributes, save the product, and expect variations to appear automatically. They don't — you have to go to the Variations tab and explicitly generate them. The button exists, it's just not obvious if you don't know to look for it. The second most common: "My variable product shows the wrong price." Price display on variable products shows a range (the cheapest to most expensive variation), and there's no way to override this without custom code or a plugin.
+</Callout>
+
+<Callout type="edge" label="Edge case">
+If you import variable products via CSV (which agencies do constantly), the variation data format is specific and unforgiving. Each variation is its own row, linked to the parent by SKU. If the parent SKU is wrong, the import silently creates orphaned simple products instead of variations. Always test a small import first.
+</Callout>

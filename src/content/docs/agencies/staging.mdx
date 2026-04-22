@@ -1,0 +1,18 @@
+---
+title: "Staging → Production Pitfalls"
+description: "What goes wrong when pushing staging to live."
+sidebar:
+  order: 42
+---
+
+**Database collisions:** If both environments take orders simultaneously, pushing staging overwrites live orders. Note the highest order ID before pushing and verify no overlap after (see section 3.8).
+
+**Payment credentials:** Staging uses test credentials. They come with the push. If you don't switch to live, the store appears to work but no real payments process. This is the #1 post-launch emergency for agency builds.
+
+**URLs:** Staging has a different URL. Use proper search-replace (WP-CLI or Better Search Replace) and verify `siteurl` and `home` options.
+
+**Subscriptions:** Verify staging mode is active on staging, deactivated on production. Staging can process real renewals if not detected correctly.
+
+**wp-config.php:** Contains environment-specific values. Either exclude from push or verify manually after.
+
+**Cron/Action Scheduler:** Clear orphaned tasks from the staging environment after pushing. Check WooCommerce → Status → Action Scheduler.

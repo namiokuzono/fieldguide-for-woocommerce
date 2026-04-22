@@ -1,0 +1,26 @@
+---
+title: "Shipping Rates Not Returning"
+description: "The diagnostic sequence for \"no shipping options at checkout.\""
+sidebar:
+  order: 34
+---
+
+import Callout from '@components/Callout.astro';
+
+This directly prevents sales. The sequence that resolves ~80% of cases:
+
+**1.** Is the customer entering a complete address including zip code?
+
+**2.** Enable shipping debug mode (WooCommerce → Settings → Shipping → Shipping Options). Check which zone matched.
+
+**3.** Are zones overlapping? Top-to-bottom, first match wins. Consolidate overlapping zones.
+
+**4.** For live rates: are carrier API credentials valid? UPS, USPS, FedEx have all migrated to OAuth 2.0. Check permissions: UPS needs Authorization + Rating. FedEx needs Address Validation + Freight LTL + Rates and Transit Times.
+
+**5.** Is the store origin address complete? Live rates need origin-to-destination.
+
+**6.** Do products have weight/dimensions set? Most carrier APIs require this.
+
+<Callout type="field" label="From the field">
+When a merchant says "shipping suddenly stopped working," the first question: did a carrier API credential expire or did the shipping extension update? Ask for a screenshot of the carrier's developer portal permissions — that visual check catches the issue faster than anything.
+</Callout>

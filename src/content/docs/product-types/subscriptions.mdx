@@ -1,0 +1,31 @@
+---
+title: "Subscriptions"
+description: "Recurring billing — subscription boxes, SaaS, replenishment, memberships with ongoing fees. Powerful, but it adds complexity to every layer of your store."
+sidebar:
+  order: 110
+---
+
+import Friction from '@components/Friction.astro';
+import Callout from '@components/Callout.astro';
+
+<Friction level={4} />
+
+WooCommerce Subscriptions is a paid extension that adds recurring billing to your store. It creates two new product types: Simple Subscription and Variable Subscription. These behave like their non-subscription counterparts, but with additional billing schedule fields — renewal period, sign-up fee, free trial, and expiration.
+
+The core concept: a customer buys once, and WooCommerce automatically charges them on a schedule. You get recurring orders, recurring revenue, and a subscriber management system.
+
+**What the sales page doesn't emphasize:** Subscriptions touch *everything*. It's not just a product type — it changes your payment requirements, your order management workflow, your customer service model, your tax calculations, and your hosting requirements.
+
+**Payment gateway requirements:** Not every payment gateway supports subscriptions. The gateway must support "tokenization" — storing a payment method securely so it can be charged again later without the customer being present. WooPayments and Stripe do this well. Many smaller gateways do not. If you set up subscriptions with a gateway that doesn't support automatic renewals, your customers get emailed to manually pay each cycle, which dramatically increases churn.
+
+**Stock on renewal:** This catches people off guard. If you're selling a physical subscription box, does inventory deduct each renewal cycle? Yes — each renewal creates a new order, and that order deducts stock like any other. If your subscription product runs out of stock, renewals fail. You need to think about stock forecasting for subscriber count × renewal frequency.
+
+**Gateway switching with active subscribers:** If you need to change payment gateways after you already have active subscribers, you're in for a rough time. The old gateway holds the payment tokens. The new gateway doesn't have them. Your subscribers need to re-enter their payment information. There's no automated migration for this. Plan your gateway choice carefully before you have subscribers.
+
+<Callout type="edge" label="Edge case">
+The staging site gotcha: WooCommerce Subscriptions has a "staging mode" that's supposed to detect when you're on a non-production site and pause renewal processing. But it doesn't always detect correctly — especially with unusual hosting setups, custom domains on staging, or when the staging URL is too similar to production. There have been cases where a staging site processes real renewals and charges real customers. Always verify staging mode is active when you clone a production site.
+</Callout>
+
+<Callout type="gap" label="Honest gap">
+WooCommerce Subscriptions is a paid extension. There is no native subscription support in WooCommerce core. This means recurring billing — one of the most common ecommerce business models — requires an additional purchase before you can even start.
+</Callout>

@@ -1,0 +1,14 @@
+---
+title: "Duplicate Orders"
+description: "Why orders appear twice — and how to isolate the cause."
+sidebar:
+  order: 37
+---
+
+**Common causes:** Gateway webhook retries (server slow to respond, gateway re-sends), server timeout/browser retry loops, and caching/CDN (Cloudflare) replaying POST requests that should never be cached.
+
+**The Cash on Delivery isolation test:** Enable COD payment. Place a test order. If the order duplicates with COD (no payment processing), the cause is site-level (plugin, caching, theme). If it doesn't duplicate, the payment gateway communication is the issue.
+
+**The 100% coupon test:** Same logic — removes payment processing from the equation entirely.
+
+**Narrowing questions:** Do ALL orders duplicate or only certain payment methods? When did it start? Any plugin updates around that time? Is Cloudflare or a caching plugin present?

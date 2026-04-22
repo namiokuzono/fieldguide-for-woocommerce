@@ -1,0 +1,52 @@
+---
+title: "Payments & Gateways"
+description: "How money moves from customer to you. What a gateway does, how to evaluate your options, and the operational realities nobody talks about."
+sidebar:
+  order: 21
+---
+
+import Callout from '@components/Callout.astro';
+
+A payment gateway is the bridge between your checkout and a payment processor. When a customer enters their card number and clicks "Place Order," the gateway sends that information to the processor (Stripe, PayPal's infrastructure, etc.), gets an approval or decline, and reports the result back to WooCommerce, which then updates the order status.
+
+WooCommerce ships with a few built-in methods — bank transfer, check, cash on delivery — but for real online payments, you need a gateway plugin. The major options:
+
+**WooPayments** is Woo's own solution, built on Stripe's infrastructure. It lives inside your WooCommerce dashboard — transactions, deposits, disputes are all managed without leaving your admin. The pricing is transparent and pay-as-you-go with no monthly fees. It supports credit/debit cards, Apple Pay, Google Pay, and Buy Now Pay Later options. Multi-currency is built in. Fraud protection via Stripe Radar is built in. For most merchants who are just getting started, this is the path of least resistance.
+
+**Stripe** (the direct plugin, separate from WooPayments) gives you a more direct Stripe integration — you manage everything in Stripe's own dashboard. Choose this if you already have a Stripe account you're using across multiple platforms, or if you need Stripe-specific features that WooPayments doesn't expose.
+
+**PayPal** is still the default expectation for many buyers. Some customers don't trust entering their card on a site they've never visited — PayPal is the "I trust this" button. Offering it alongside a card gateway often improves conversion rates, especially for smaller or newer stores.
+
+**Square** is compelling if you also sell in person. Square's strength is unifying online and physical POS inventory and reporting. If you have a retail shop and an online store, Square keeps them in sync.
+
+**The order status lifecycle:** Understanding what each status means is essential and surprisingly under-documented in practical terms.
+
+**Pending Payment** → the order exists but payment hasn't been confirmed. This is normal for bank transfers or off-site payment methods where confirmation is asynchronous. Orders stay in Pending until payment clears or they expire (configurable in settings).
+
+**Processing** → payment is confirmed, the order needs to be fulfilled. For physical products, this means "pack and ship it." This is the status where most merchants spend their operational time.
+
+**Completed** → order is fulfilled and done. For physical products, you mark this manually after shipping. For virtual/downloadable products, WooCommerce can auto-complete after payment — which is useful until you have a mixed cart with both physical and digital items, where auto-complete on the digital item can prematurely complete the entire order.
+
+**Refunded** → you've returned the money. Refunds can be processed through the gateway (the money actually moves back to the customer's payment method) or manually (you mark it refunded in WooCommerce but handle the actual money movement outside the system). Partial refunds are supported — you can refund individual line items or specific amounts.
+
+**Payout timing:** This catches new merchants off guard every time. You process an order today, but the money doesn't appear in your bank account today. There are two waiting periods: the *pending period* (typically 2–7 business days depending on your country, during which the payment processor holds the funds) and *bank processing time* (1–3 additional days for your bank to process the deposit). Your payout schedule — daily, weekly, or monthly — determines how often accumulated cleared funds are sent to your bank.
+
+<Callout type="field" label="From the field">
+The number one payments support case isn't technical — it's "where is my money?" New merchants expect instant access to funds. They don't. The pending period is not something WooCommerce or the gateway can reduce — it's set by the payment processor based on the account's country and risk profile. The best thing you can do is set expectations with yourself and understand that a sale today becomes accessible cash in roughly 3–10 business days.
+</Callout>
+
+<Callout type="edge" label="Edge case">
+**High-risk merchant category codes (MCC):** Some business types — adult content, gambling, nutraceuticals, CBD, firearms-related, certain financial services — are classified as high-risk by payment processors. WooPayments and Stripe may decline to serve these merchants, or may apply additional review periods before approving the account. If your business falls into a restricted category, you may need a specialized payment processor. Check the list of prohibited and restricted businesses *before* you build your entire store around a gateway that won't approve you.
+</Callout>
+
+<Callout type="tip" label="Choosing a gateway">
+**Starting out, selling domestically, want simplicity?** WooPayments. Everything in one dashboard, no separate accounts to manage.
+
+**Already on Stripe across other platforms?** Stripe direct plugin. Keep your existing Stripe account and dashboard.
+
+**Selling to cautious buyers or internationally?** Add PayPal alongside your primary gateway. It's a trust signal, especially for cross-border purchases.
+
+**Online + physical retail?** Square, for unified inventory and reporting across both channels.
+
+**The universal rule:** Don't offer more than 2–3 payment options at checkout. Too many choices create decision paralysis and reduce conversion.
+</Callout>

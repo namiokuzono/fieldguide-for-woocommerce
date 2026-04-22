@@ -1,0 +1,18 @@
+---
+title: "Email Delivery Failures"
+description: "The step-by-step protocol for \"customers aren't getting order emails.\""
+sidebar:
+  order: 36
+---
+
+**Step 1:** Install WP Mail Logging. Always the first step.
+
+**Step 2:** Place a test order (use a 100% coupon).
+
+**Step 3:** Check the mail log (Tools → WP Mail Log).
+
+**Email appears in log → sent but not received.** Deliverability problem. Check spam folders. Verify FROM uses your domain (not @gmail.com). Contact hosting about SPF/DKIM/DMARC. Consider an SMTP plugin.
+
+**Email not in log → never generated.** Site-level problem. Deactivate SMTP plugin and test. If emails generate without it, the SMTP config needs fixing. If still nothing, run conflict testing (3.1).
+
+**For Gmail/Yahoo specifically:** Since 2024, both require proper authentication. Without SPF, DKIM, and DMARC, emails may be silently dropped — not even spam folder. This is the #1 "emails suddenly stopped" cause.

@@ -1,0 +1,27 @@
+---
+title: "Simple Products"
+description: "One thing, one price, one SKU. The foundation everything else builds on."
+sidebar:
+  order: 11
+---
+
+import Friction from '@components/Friction.astro';
+import Callout from '@components/Callout.astro';
+
+<Friction level={1} />
+
+A simple product is exactly what it sounds like. A candle. A book. A bag of coffee beans. One item, one price. If someone's brand new to WooCommerce, this is where they start, and it should feel easy — because it is.
+
+You set the price, write a description, upload an image, and publish. That's it. The product appears in your shop, someone buys it, and you ship it. The simplicity is the point.
+
+**Stock management** on a simple product is straightforward: you either track it or you don't. If you turn on "Manage stock," WooCommerce gives you a quantity field. Every time someone completes an order, the number goes down by one. When it hits zero, the product shows as out of stock. You can set a low-stock threshold to get notified before you run out, and you can allow backorders if you want to keep selling while you restock.
+
+There are really only two things worth understanding here that the docs don't make obvious:
+
+**Stock status and stock quantity are separate things.** You can have a stock quantity of 50 but manually set the stock status to "Out of stock" — and the product will show as unavailable. This trips people up when they're troubleshooting "why is my product showing out of stock when I have inventory?" The answer is almost always: someone (or a plugin) set the status manually and it's overriding the quantity.
+
+**Simple products are the building blocks for most extensions.** When you later use Bundles, Subscriptions, or Composite Products, the individual components are usually simple products under the hood. Understanding how a simple product behaves — how its stock decrements, how its status changes, when it triggers emails — matters because that same logic runs inside more complex setups.
+
+<Callout type="field" label="From the field">
+Most "my stock is wrong" tickets for simple products come down to one of three things: a bulk edit accidentally overwrote stock quantities, a plugin (usually an inventory sync or POS integration) is modifying stock status directly, or a cancelled/refunded order restored stock when the merchant didn't expect it to. Check order notes first — they log every stock change with a timestamp.
+</Callout>

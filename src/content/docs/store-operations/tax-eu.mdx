@@ -1,0 +1,52 @@
+---
+title: "Tax: EU VAT, Cross-Border & B2B"
+description: "The reality of selling within and into the EU. VAT on digital goods, intra-community supply, reverse charge, OSS — and where WooCommerce's tooling doesn't keep up."
+sidebar:
+  order: 25
+---
+
+import Callout from '@components/Callout.astro';
+
+If US sales tax is complicated because of 13,000 jurisdictions, EU VAT is complicated because of 27 sovereign countries with their own rates, a supranational framework that governs cross-border rules, and a set of exceptions, thresholds, and special regimes that would make a tax attorney's head spin. WooCommerce tries to handle this. It partially succeeds.
+
+**The basics:** VAT (Value Added Tax) is charged on most goods and services sold in the EU. Each country sets its own standard rate (ranging from 17% in Luxembourg to 27% in Hungary) and may have reduced rates for certain categories. Unlike US sales tax, VAT is included in the displayed price in most B2C contexts — meaning the sticker price is the final price.
+
+**B2C within your own country:** Straightforward. You charge your country's VAT rate. WooCommerce handles this natively — set up a Standard Tax Rate for your country, check "Yes, I will enter prices inclusive of tax," and you're done.
+
+**B2C cross-border within the EU:** This is where it gets interesting. If you're a merchant in Spain selling to a consumer in Portugal, the VAT should be charged at Portugal's rate, not Spain's — because the tax follows the *destination*. This is the default rule for cross-border B2C sales within the EU.
+
+The **One-Stop Shop (OSS)** scheme exists to simplify this: instead of registering for VAT in every EU country you sell to, you register for OSS in your home country and file a single quarterly return that covers all your EU cross-border sales. You still charge the destination country's rate, but you only deal with one tax authority for filing.
+
+WooCommerce can calculate destination-based VAT rates if you set up tax rates for each EU country. The tax rate tables exist, and you can either enter them manually or use an automated tax service. The *calculation* works. The *reporting* for OSS filing? That's on you — WooCommerce doesn't generate OSS-compliant reports natively. You'll need to export data and format it for your filing, or use a third-party tax service.
+
+**B2B and the reverse charge:** When a VAT-registered business in one EU country sells to a VAT-registered business in another EU country, the sale can be zero-rated under the reverse charge mechanism. The buyer accounts for the VAT in their own country instead of the seller charging it. The **EU VAT Number** plugin for WooCommerce handles this: the buyer enters their VAT ID at checkout, the plugin validates it against the EU VIES database, and if valid, removes the VAT from the order.
+
+This works. But the edges are rough.
+
+**VIES downtime:** The EU's VIES validation service goes down. Not rarely — regularly. When it's down, the plugin can't validate VAT numbers. What happens then? Depending on your settings, either the order fails (bad for the customer) or the VAT is charged anyway (bad for B2B pricing). Neither outcome is great. There's no built-in graceful degradation for this scenario.
+
+**Intra-community supply logic:** Here's where I'll be honest — this is where WooCommerce's EU VAT handling falls short in ways that matter for serious cross-border businesses.
+
+A true intra-community supply isn't just "remove VAT when a valid VAT ID is provided." It has conditions: the goods must physically move from one member state to another, the buyer must have a valid VAT number in a *different* member state than the seller, and there are specific documentation and reporting requirements (EC Sales Lists, Intrastat declarations above thresholds). WooCommerce's EU VAT Number plugin handles the VAT ID check and the zero-rating. It does not handle the documentation, the reporting, or the conditional logic around whether the goods actually cross borders.
+
+For a Spanish merchant selling to a Portuguese business: the plugin validates the Portuguese VAT number, removes VAT, done. But what if the goods are delivered to a Spanish address even though the buyer is Portuguese-registered? What if the buyer provides a VAT ID from a third country? The plugin doesn't evaluate these scenarios — it's a binary check: valid VAT number in the EU → zero rate. The nuance of intra-community supply conditions is left entirely to the merchant to manage.
+
+**Digital goods VAT:** Here the rules are clear but harsh. Digital goods and services sold to EU consumers are *always* taxed at the buyer's country rate, regardless of where the seller is. This applies even if the seller is outside the EU. There's no threshold — it applies from the first sale. WooCommerce can handle the rate calculation if you've set up rates for all EU countries, but again, the reporting burden (MOSS/OSS filing) is external to WooCommerce.
+
+<Callout type="gap" label="Honest gap">
+**EU VAT Number plugin maturity:** The plugin does what it says — validates VAT numbers and applies zero-rate for B2B. But it doesn't handle the broader compliance picture: OSS reporting, EC Sales List generation, Intrastat thresholds, or conditional intra-community supply logic. For a small merchant selling a few B2B orders across borders, this is manageable. For a serious cross-border operation, you'll either need a comprehensive tax compliance service (Avalara, Taxamo, Quaderno) or significant manual processes. The gap between what merchants expect from "EU VAT support" and what the plugin actually delivers is real.
+</Callout>
+
+<Callout type="field" label="From the field">
+The merchants who struggle most with EU VAT aren't the ones who don't understand the rules — they're the ones who assumed WooCommerce handles everything because the plugin exists. They set up the EU VAT Number plugin, see it validate a VAT number and remove tax, and assume compliance is handled. Then their accountant asks for an EC Sales List at quarter-end and they realize they've been manually tracking nothing. If you're selling B2B across EU borders, the plugin is step one of about seven.
+</Callout>
+
+<Callout type="tip" label="EU VAT decision tree">
+**Selling B2C only, within your own country?** Set up your national VAT rate. You're done.
+
+**Selling B2C cross-border within the EU?** Set up tax rates for each EU destination country. Register for OSS in your home country. Plan for how you'll generate OSS reports — WooCommerce won't do this for you.
+
+**Selling B2B cross-border within the EU?** Install the EU VAT Number plugin. Understand that it handles validation and zero-rating only — not compliance reporting. Talk to your accountant about EC Sales Lists and documentation requirements.
+
+**Selling digital goods to EU consumers from anywhere?** You must charge destination-country VAT from the first sale. No threshold. Set up all EU tax rates and register for MOSS/OSS.
+</Callout>

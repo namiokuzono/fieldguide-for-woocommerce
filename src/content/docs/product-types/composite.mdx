@@ -1,0 +1,27 @@
+---
+title: "Composite Products"
+description: "Multi-step product builders. \"Pick your base, then your topping, then your packaging.\" The most powerful product configuration in WooCommerce — and the steepest learning curve."
+sidebar:
+  order: 19
+---
+
+import Friction from '@components/Friction.astro';
+import Callout from '@components/Callout.astro';
+
+<Friction level={3} />
+
+Composite Products is WooCommerce's answer to complex product configuration. It breaks the buying process into multiple steps (called "components"), where each step presents a set of product options. The customer progresses through the steps, making selections, and the final product is the sum of their choices.
+
+Think: custom computers (pick a CPU, then RAM, then storage, then a case). Or: gift boxes (pick a box size, then 3 items to fill it, then wrapping). Or: custom furniture (pick a frame, then fabric, then legs).
+
+**Stock tracking** works per-component selection. If the customer picks a specific CPU in step 1, that CPU's stock deducts when they buy. Each component is backed by real simple or variable products, so stock is always accurate at the individual level.
+
+**Conditional logic:** You can set dependencies between components — "if they pick the small box in step 1, only show these items in step 2." This is where Composites are genuinely powerful and where Bundles can't compete. The configuration space can be vast without creating thousands of variations.
+
+**Where it gets hard:** The setup time is significant. Each component needs its own product pool, its own display settings, potentially its own conditional rules. The admin UI for Composite Products is dense. Merchants who pick Composite for a "simple customizable product" often realize halfway through setup that Bundles with optional items would have been sufficient — and much faster to configure.
+
+**Performance:** Each component queries its own set of products, so a composite with 5 components, each drawing from a category of 50 products, means the product page is loading and filtering 250 products worth of data. Complex composites on shared hosting can feel sluggish.
+
+<Callout type="field" label="From the field">
+If your "composite" has fewer than 3 components and no conditional logic between them, you almost certainly want a Bundle with optional items instead. Composites are for genuine multi-step configuration where the choices in one step affect the options in the next. If they don't affect each other, you're adding complexity without benefit.
+</Callout>

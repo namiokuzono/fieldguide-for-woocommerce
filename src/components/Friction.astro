@@ -1,0 +1,35 @@
+---
+/**
+ * Friction indicator chip — 1 (low) through 5 (extreme).
+ * Ported from the HTML prototype's `.friction` element.
+ * Styled in src/styles/custom.css so theme tokens / dark mode apply.
+ */
+interface Props {
+  level: 1 | 2 | 3 | 4 | 5;
+  label?: string;
+}
+
+const { level, label } = Astro.props;
+
+const defaultLabels: Record<number, string> = {
+  1: 'Low friction',
+  2: 'Some friction',
+  3: 'Moderate friction',
+  4: 'High friction',
+  5: 'Maximum friction',
+};
+
+const text = label ?? defaultLabels[level];
+---
+
+<span
+  class={`fg-friction fg-friction-${level}`}
+  aria-label={`Friction level ${level} of 5: ${text}`}
+>
+  <span class="fg-friction-dots" aria-hidden="true">
+    {[1, 2, 3, 4, 5].map((i) => (
+      <span class={`fg-friction-dot${i <= level ? ' filled' : ''}`}></span>
+    ))}
+  </span>
+  {text}
+</span>

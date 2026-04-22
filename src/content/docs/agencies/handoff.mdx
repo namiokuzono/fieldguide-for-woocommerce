@@ -1,0 +1,22 @@
+---
+title: "Client Handoff & Knowledge Transfer"
+description: "What to document when handing a store to a client."
+sidebar:
+  order: 43
+---
+
+import Callout from '@components/Callout.astro';
+
+**Daily ops training:** View/fulfill orders. Mark completed. Issue refunds. Add/edit simple products. Find sales reports.
+
+**Update policy:** Update on staging first. Test checkout and critical flows. Then update production. Never during peak hours. If anything breaks, restore from pre-update backup.
+
+**Escalation paths:** Hosting → hosting provider. Payment issues → gateway support. Marketplace extensions → Woo support. Theme → theme developer. Plugin → plugin developer. "Everything broken" → you. Clients without this list contact you for everything.
+
+**Credentials:** WordPress admin, hosting panel, DNS, payment gateway, email service, CDN, integrations. Stored securely. Client has admin access to everything — never locked out of their own infrastructure.
+
+**Maintenance expectations:** Regular updates, monthly backups, annual SSL check, periodic plugin audits, hosting reviews as traffic grows. Either you provide this as a paid service or the client owns it — but it can't be ambiguous.
+
+<Callout type="field" label="From the field">
+The best handoff document I've seen was one page: daily tasks (fulfill orders, check stock), weekly (review reports), monthly (update plugins on staging → test → update production), and a contact list. One page. Laminated. Pinned next to the monitor. Everything else in a searchable knowledge base. Keep the handoff simple or it won't get read.
+</Callout>

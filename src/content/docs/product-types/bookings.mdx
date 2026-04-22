@@ -1,0 +1,27 @@
+---
+title: "Bookings & Appointments"
+description: "Time-slot and resource-based products. Tours, consultations, equipment rental, classes. WooCommerce Bookings exists — but it's not your only option."
+sidebar:
+  order: 112
+---
+
+import Friction from '@components/Friction.astro';
+import Callout from '@components/Callout.astro';
+
+<Friction level={4} />
+
+WooCommerce Bookings (paid extension) lets you sell time — appointments, tours, classes, rentals, reservations. Instead of a quantity, the customer picks a date, time, and duration. Instead of stock, you configure availability: which days, which hours, how many people per slot, buffer time between bookings.
+
+**Resources:** A resource is a specific thing being booked — a meeting room, a guide, a piece of equipment. You can have multiple resources per bookable product, each with their own availability. "Kayak Rental" might have 5 kayaks as resources, so 5 people can book the same time slot.
+
+**Pricing complexity:** Bookings pricing can vary by day of week, by time of day, by duration, by number of people, and by resource. This flexibility is why people choose Bookings, and it's also why configuration takes significantly longer than a regular product. A "simple" booking — a 1-hour consultation with one provider — is straightforward. A "complex" booking — a multi-day tour with peak/off-peak pricing, group rates, and multiple guide resources — can take hours to configure correctly.
+
+**Google Calendar sync:** Bookings can sync with Google Calendar, both reading availability (blocking times where the calendar shows busy) and writing new bookings to the calendar. In practice, the sync is functional but not instant — there's a polling interval, and edge cases around timezone handling across different Calendar accounts can create conflicts.
+
+**The honest comparison:** WooCommerce Bookings works. But dedicated booking platforms like **Amelia**, **Bookly**, or **Simply Schedule Appointments** often provide a smoother customer experience, better calendar UIs, and more focused feature sets. The tradeoff is integration: WooCommerce Bookings lives inside your Woo ecosystem (orders, coupons, subscriptions all work natively), while standalone booking plugins may or may not integrate cleanly with the rest of your store.
+
+If booking is your *entire* business (you're a salon, a tour company, a rental shop), evaluate the standalone options seriously. If booking is one feature of a broader ecommerce store, WooCommerce Bookings keeps everything in one system.
+
+<Callout type="gap" label="Honest gap">
+WooCommerce Bookings can feel dated compared to modern booking interfaces. The customer-facing calendar and time picker UI is functional but not beautiful. The admin configuration UI is dense and not intuitive for first-time users. If the booking experience *is* your product (a spa, a premium tour), the frontend presentation matters enough that you may want to evaluate alternatives or budget for custom CSS work.
+</Callout>

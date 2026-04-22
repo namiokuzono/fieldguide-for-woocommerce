@@ -1,0 +1,51 @@
+---
+title: "Print on Demand"
+description: "Printful, Printify, Gooten — products that don't exist until someone orders them. Zero inventory, but real operational friction."
+sidebar:
+  order: 114
+---
+
+import Friction from '@components/Friction.astro';
+import Callout from '@components/Callout.astro';
+
+<Friction level={3} />
+
+Print on Demand (POD) is a business model where you design products — t-shirts, mugs, posters, phone cases — and a third-party service manufactures and ships them only when a customer orders. You carry zero inventory. The POD provider handles production, packaging, and fulfillment.
+
+**How it connects to WooCommerce:** Services like **Printful**, **Printify**, and **Gooten** offer WooCommerce plugins that sync products from their platform into your store. When a customer places an order on your WooCommerce site, the plugin automatically sends the order to the POD provider for fulfillment. Tracking numbers sync back to WooCommerce when the order ships.
+
+**Stock management:** There is effectively none on your end. The POD provider manages their own materials. Your WooCommerce products are set to "In stock" permanently — because the provider can always print another one. The concept of "running out" doesn't apply unless the provider discontinues a base product.
+
+**Where the friction lives:**
+
+**The plugin is a third-party integration.** This means the Printful or Printify plugin is not maintained by WooCommerce. When it breaks — product sync fails, orders don't pass through, fulfillment status doesn't update — WooCommerce support can't fix it. It's the POD provider's integration (see section 3.2). This is the number one POD support case: the merchant contacts Woo, Woo says it's a plugin issue, the merchant is stuck between two support teams.
+
+**API-heavy resource requirements.** POD plugins sync product data (including images and variants) from the provider's API. This can be resource-intensive, especially if you have hundreds of designs. PHP memory should be at least 512MB, time limit 120+ seconds. Background sync tasks run through Action Scheduler and add to your server load.
+
+**Shipping rates and timing.** POD products have production time (3–7 days typically) plus shipping time. The customer expects Amazon-speed delivery; they get 2–3 weeks. Setting clear expectations on your product pages and in order confirmation emails prevents most customer complaints. Some POD providers offer shipping rate APIs that integrate with WooCommerce — use them instead of guessing at flat rates.
+
+**The return shipping label problem:** This is a friction that genuinely has no clean solution in the WooCommerce ecosystem. When a customer wants to return a POD product, who creates the return shipping label? It's not you — you don't have a warehouse. It's not the POD provider by default — most POD services don't handle returns back to their facilities for individual customer returns (they handle defective items differently).
+
+WooCommerce Shipping can generate shipping labels, but it creates labels from *your* store address — which is your home or office, not a POD fulfillment center. If you generate a return label, the product ships back to you, not to Printful. Now you have a returned custom-printed t-shirt sitting in your living room that can't be resold.
+
+The workarounds are all manual: some merchants eat the cost and tell customers to keep the item (issuing a refund without a return). Some set up a separate return address at a third-party returns center. Some negotiate directly with their POD provider for a returns process on defective items. But there is no "click a button, generate a return label to the POD facility" flow. This gap in the process is real, it affects every POD merchant eventually, and nobody publishes a clean answer because there isn't one.
+
+<Callout type="field" label="From the field">
+A POD merchant came to us struggling with return label creation. They were using WooCommerce Shipping to generate labels, but the labels pointed to their home address — not the Printful warehouse. The customer sent the return back to the merchant's apartment. The merchant had no way to re-ship it to Printful for inspection, and Printful's return policy only covers defects reported within a specific window. The merchant absorbed the loss. This is a systemic gap: WooCommerce's shipping label system assumes you control the fulfillment point. POD breaks that assumption. The honest answer is to build a returns policy that accounts for this — refund-without-return for low-cost items, and a clear returns FAQ that sets expectations before purchase.
+</Callout>
+
+<Callout type="gap" label="Honest gap">
+**Returns for POD have no house.** WooCommerce doesn't know about POD fulfillment centers. POD providers don't integrate their return flows into WooCommerce. Shipping label plugins generate labels from your address. The result is a gap in the process that every POD merchant must solve manually — with policy, not technology. This is one of those cases where the tooling simply hasn't caught up to the business model.
+</Callout>
+
+<Callout type="tip" label="Making POD work on WooCommerce">
+**1.** Set production + shipping time expectations clearly on product pages. "Ships in 5–12 business days" prevents most complaints.
+
+**2.** Write a returns policy that accounts for POD reality: refund-without-return for items under $X, defect claims handled through POD provider's process, no exchanges (each item is custom-made).
+
+**3.** Allocate adequate server resources — POD sync is API-heavy.
+
+**4.** Test the full order flow on staging: place an order → verify it reaches the POD provider → verify tracking syncs back. Don't go live until this works end-to-end.
+
+**5.** Understand the support boundary: WooCommerce handles your store. The POD plugin handles the connection. The POD provider handles production. Know who to call for what.
+</Callout>

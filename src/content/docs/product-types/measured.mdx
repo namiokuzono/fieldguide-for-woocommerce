@@ -1,0 +1,33 @@
+---
+title: "Measured & Weight-Based Products"
+description: "Fabric by the yard. Rope by the meter. Coffee by the kilo. Products sold by measurement, not by unit."
+sidebar:
+  order: 12
+---
+
+import Friction from '@components/Friction.astro';
+import Callout from '@components/Callout.astro';
+
+<Friction level={2} />
+
+This is one of the first places WooCommerce shows its seams. Plenty of real businesses sell by length, weight, area, or volume — fabric shops, hardware stores, bulk food, lumber yards. And WooCommerce doesn't have a native "sell by measurement" product type.
+
+What you get out of the box is a simple product with weight and dimension fields. But those fields are for *shipping calculations*, not for pricing. There's no built-in way to say "this product is $12 per meter, let the customer enter how many meters they want."
+
+**How people actually solve this:**
+
+The most common approach is **Measurement Price Calculator** (a Woo Marketplace extension). It lets you define a pricing unit — per square foot, per yard, per kilogram — and gives the customer an input field on the product page. It calculates the price dynamically and adjusts stock based on the measurement purchased. This is the closest thing to a "just works" solution.
+
+Some merchants hack it with variable products — creating variations like "1 meter," "2 meters," "5 meters" — but this gets messy fast. You end up with dozens of variations, each needs its own stock, and customers can't order 3.5 meters of anything.
+
+Others use **quantity-based pricing** where the "unit" is the measurement increment (e.g., one unit = one foot) and the customer just adjusts quantity. This works for whole-number increments but breaks for decimals, and the cart says "Qty: 12" instead of "12 feet" which confuses customers.
+
+**Stock management** here is the real challenge. If you're selling fabric by the yard and you have a 50-yard bolt, how does WooCommerce know you now have 47.5 yards left? With Measurement Price Calculator, it handles the decimal stock deduction. Without it, you're tracking stock manually or with workarounds. This is the part that breaks people.
+
+<Callout type="gap" label="Honest gap">
+WooCommerce does not natively support measurement-based pricing or decimal stock quantities. The weight and dimension fields on a product are for shipping calculations only — they don't affect pricing or checkout behavior. You will need an extension for this, and there's no way around it.
+</Callout>
+
+<Callout type="field" label="From the field">
+Merchants who sell by measurement often don't realize they have a problem until their first stocktake doesn't match WooCommerce. They've been selling "units" and manually converting in their head. If your business model involves measurement-based pricing, sort this out *before* you have six months of inventory data that doesn't reconcile.
+</Callout>

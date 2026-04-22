@@ -1,0 +1,76 @@
+---
+title: Field Guide for WooCommerce
+description: The complete operational playbook that should ship with WooCommerce but doesn't exist.
+template: splash
+hero:
+  tagline: The complete operational playbook that should ship with WooCommerce but doesn't exist.
+  actions:
+    - text: Start reading
+      link: /product-types/
+      icon: right-arrow
+---
+
+Every product type, every tax scenario, every shipping configuration, every edge case — how things actually work, and what to do when they don't.
+
+## Part One — Product Types
+
+- **1.1 Simple Products** — One thing, one price, one SKU. The foundation everything else builds on.
+- **1.2 Measured & Weight-Based** — Fabric by the yard. Rope by the meter. Coffee by the kilo. Products sold by measurement, not by unit.
+- **1.3 Grouped Products** — A display wrapper for related products. No stock logic of its own — each child product manages its own inventory.
+- **1.4 Variable Products** — Size, color, material — products with options that each have their own price, SKU, and stock.
+- **1.5 External / Affiliate** — Products that live on someone else's site. You display them — they handle the sale.
+- **1.6 Downloadable & Virtual** — Files, digital access, and services. Two flags that do different things — and you often need both.
+- **1.7 Product Add-Ons** — Custom fields at checkout — engraving text, gift wrapping, color preferences. Flexible. But does not track stock.
+- **1.8 Product Bundles** — Kits and sets with real stock tracking. Unlike Add-Ons, inventory actually deducts per component.
+- **1.9 Composite Products** — Multi-step product builders. The most powerful product configuration in WooCommerce — and the steepest learning curve.
+- **1.10 Subscriptions** — Recurring billing — subscription boxes, SaaS, replenishment, memberships with ongoing fees.
+- **1.11 Memberships** — Gated access to content, products, or discounts based on membership plans.
+- **1.12 Bookings** — Time-slot and resource-based products. Tours, consultations, equipment rental, classes.
+- **1.13 Content Drip & Courses** — Selling access to content that unlocks over time. Courses, lesson sequences, gated libraries.
+- **1.14 Print on Demand** — Printful, Printify, Gooten — products that don't exist until someone orders them.
+- **1.15 Marketplace & Multi-Vendor** — Multiple vendors selling through your store. The hardest WooCommerce configuration by far.
+- **1.16 Stock Management Cheat Sheet** — Which product types track inventory, which don't, and what surprises you.
+
+## Part Two — Store Operations
+
+- **2.1 Payments & Gateways** — How money moves from customer to you.
+- **2.2 KYC, MCC & Verification** — The invisible layer beneath payments. Get this wrong and your money stops moving.
+- **2.3 Shipping** — Zones, methods, live rates, and the matching logic that confuses everyone at least once.
+- **2.4 Tax: US & Nexus** — The concept of nexus, how automated tax works, when $0 tax is correct.
+- **2.5 Tax: EU VAT & Cross-Border** — The reality of selling within and into the EU.
+- **2.6 Emails** — How WooCommerce sends emails, why they vanish, and the diagnostic path that saves hours.
+- **2.7 Orders & Statuses** — The order lifecycle, what triggers each status change.
+- **2.8 Checkout: Block vs Classic** — The transition from shortcode-based checkout to Block Checkout.
+
+## Part Three — When Things Go Wrong
+
+- **3.1 The Conflict Testing Method** — The foundational diagnostic technique.
+- **3.2 "It's a WooCommerce Problem"** — When a third-party plugin developer blames WooCommerce.
+- **3.3 Cart & Checkout Failures** — "Can't add to cart." "Variation unavailable." Almost always a conflict.
+- **3.4 Shipping Rates Not Returning** — The diagnostic sequence for "no shipping options at checkout."
+- **3.5 Tax Showing as $0** — When zero tax is correct (and when it's not).
+- **3.6 Email Delivery Failures** — The step-by-step protocol for "customers aren't getting order emails."
+- **3.7 Duplicate Orders** — Why orders appear twice — and how to isolate the cause.
+- **3.8 Database Mismatches** — When orders show the wrong customer's data after a migration.
+- **3.9 Fraud & Card Testing** — What card testing looks like, the severity spectrum, and how to respond.
+- **3.10 Intermittent Issues** — It happens sometimes. You can't reproduce it.
+- **3.11 Performance Problems** — "WooCommerce is slow." Usually it's not WooCommerce.
+- **3.12 Integrations & Firewalls** — When Cloudflare, hosting firewalls, or security tools block legitimate connections.
+
+## Part Four — For Agencies & Builders
+
+- **4.1 Pre-Launch Checklist** — Everything to verify before a store goes live.
+- **4.2 Staging → Production** — What goes wrong when pushing staging to live.
+- **4.3 Client Handoff** — What to document when handing a store to a client.
+- **4.4 Extension Evaluation** — How to assess a plugin before committing a client's store to it.
+
+## Part Five — Extending WooCommerce with Code
+
+- **5.1 Why Build Your Own Plugin** — When a custom plugin is better than hunting for an extension that half-fits.
+- **5.2 The Custom Plugin Approach** — Why a plugin file is better than pasting code into functions.php.
+- **5.3 Hooks, Filters & the Woo API** — The fundamental concepts you need to understand.
+- **5.4 Using Claude Code to Build** — AI as infrastructure for building custom WooCommerce functionality.
+- **5.5 Real Examples** — Actual use cases where a custom plugin is the right call.
+- **5.6 Maintaining Custom Code** — Custom plugins aren't "set and forget."
+- **5.7 Advanced Diagnostic Snippets** — One-time code you run to diagnose a problem, then throw away.
+- **5.8 Server Resource Planning** — WooCommerce is a write-heavy, scheduled-action-dependent application.

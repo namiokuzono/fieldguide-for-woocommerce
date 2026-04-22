@@ -1,0 +1,42 @@
+---
+title: "Emails"
+description: "How WooCommerce sends emails, why they vanish, and the diagnostic path that saves hours of troubleshooting."
+sidebar:
+  order: 26
+---
+
+import Callout from '@components/Callout.astro';
+
+WooCommerce sends transactional emails — order confirmations, shipping notifications, password resets — using WordPress's built-in `wp_mail()` function. This is a PHP function that hands the email to your server's mail system (usually Sendmail or Postfix on the hosting level) and says "please deliver this."
+
+The key thing to understand: **WooCommerce generates emails. It does not deliver them.** Delivery is handled by your hosting server's mail configuration, or by whatever SMTP plugin you've installed. When emails don't arrive, the problem is almost never WooCommerce — it's the delivery layer underneath it.
+
+**The two failure modes:**
+
+**Failure mode 1: Email is generated but not received.** WooCommerce created the email and handed it to the mail system. The mail system sent it. But the recipient's email provider (Gmail, Yahoo, corporate mail) rejected it, flagged it as spam, or silently dropped it. This is a deliverability problem, and it's the most common one.
+
+**Failure mode 2: Email is not generated at all.** Something on the site — a plugin conflict, a crashed action hook, a misconfigured SMTP plugin — prevented WooCommerce from even creating the email. This is a site-level problem.
+
+**The diagnostic path:** Install **WP Mail Logging** (free plugin). It records every email WordPress attempts to send. Place a test order. Then check the log:
+
+If the email *appears* in the log → the email was generated and sent. The problem is deliverability. Check spam folders first. Then check your email authentication.
+
+If the email *does not appear* in the log → the email was never generated. The problem is on your site. Start conflict testing: deactivate plugins one by one, switch to a default theme, and test again.
+
+**Email authentication (SPF, DKIM, DMARC):** These are DNS records that prove to receiving email servers that your emails are legitimate and actually sent from your domain. Without them, your hosting server is essentially an anonymous stranger claiming to send email on behalf of your domain. Gmail and Yahoo have been increasingly strict about this since early 2024.
+
+**SPF** says "these servers are authorized to send email for my domain."  
+**DKIM** adds a cryptographic signature proving the email wasn't tampered with.  
+**DMARC** tells receiving servers what to do if SPF or DKIM fail (quarantine, reject, or nothing).
+
+Setting these up is done at your DNS provider level, not in WooCommerce. Your hosting provider should be able to help, or you configure them in your domain's DNS settings.
+
+**The Gmail/Yahoo changes of 2024:** Both providers tightened enforcement on email authentication. If your emails don't have proper SPF, DKIM, and DMARC records, Gmail and Yahoo are now much more likely to silently drop them — not even spam folder, just gone. This was a major change that broke email delivery for thousands of stores that had been working fine for years.
+
+**The FROM address trap:** If your WooCommerce email "From" address is a Gmail or Yahoo address (yourstore@gmail.com), your emails will fail. You're asking your hosting server to send email claiming to be from Gmail, but Gmail's SPF record says only Gmail's own servers are authorized. The receiving server checks, sees the mismatch, and rejects or drops the email. Use a domain-based FROM address (hello@yourdomain.com) — always.
+
+**SMTP plugins as a bypass:** If your hosting server's mail system is unreliable, an SMTP plugin (WP Mail SMTP, FluentSMTP, Post SMTP) lets you route emails through a dedicated email service — SendGrid, Mailgun, Amazon SES, or even a Gmail/Outlook SMTP relay. This often fixes deliverability issues because dedicated services have better sender reputation and proper authentication configured by default.
+
+<Callout type="field" label="From the field">
+Email delivery is technically not a WooCommerce problem — wp_mail() is a WordPress core function, and delivery is a hosting/DNS issue. But merchants don't know that, and they shouldn't have to. The diagnostic path above — install WP Mail Logging, place a test order, check the log — is always the first step. It splits the problem into "site issue" vs "delivery issue" within two minutes, and from there you know which direction to troubleshoot. Without this step, you can spend hours guessing.
+</Callout>

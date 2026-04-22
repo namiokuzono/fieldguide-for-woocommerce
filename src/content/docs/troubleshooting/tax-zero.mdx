@@ -1,0 +1,12 @@
+---
+title: "Tax Showing as $0"
+description: "When zero tax is correct (and when it's not)."
+sidebar:
+  order: 35
+---
+
+**$0 is usually correct.** Automated tax calculates based on nexus. No nexus in the customer's state = zero tax. Not a bug.
+
+**If you expect tax and it's $0:** Add a Standard Tax Rate for your nexus state with a wildcard (*) that automated tax can override. See section 2.3 for the setup.
+
+**If tax was working and suddenly shows $0:** Check the automated tax service is active. Check if a plugin update changed settings. Check the product's tax class. Verify the test address is in a nexus state — people often test outside their nexus without realizing it.

@@ -1,0 +1,34 @@
+---
+title: "The Custom Plugin Approach"
+description: "Why a plugin file is better than pasting code into functions.php — and how to structure it."
+sidebar:
+  order: 52
+---
+
+If you've been around WordPress long enough, you've seen the advice: "paste this code into your theme's functions.php." This works, technically. It's also fragile. If you switch themes, the code disappears. If you update the theme and it overwrites functions.php, the code disappears. If the code has a fatal error, your entire site goes down because functions.php loads on every page.
+
+**A custom plugin is better.** It's a single PHP file (or a small folder) in `wp-content/plugins/`. It survives theme changes. It can be activated and deactivated independently. If it has an error, you can deactivate it without taking down the whole site. It's modular.
+
+**The simplest custom plugin structure:**
+
+Create a file called `my-woo-customizations.php` in `wp-content/plugins/my-woo-customizations/`. At the top, add the plugin header:
+
+```php
+<?php
+/**
+ * Plugin Name: My WooCommerce Customizations
+ * Description: Custom functionality for my store
+ * Version: 1.0.0
+ * Author: Your Name
+ * Requires Plugins: woocommerce
+ */
+
+// Prevent direct access
+defined( 'ABSPATH' ) || exit;
+```
+
+That's it. That's a valid plugin. Everything you add below the header is your custom functionality. WordPress sees the header, lists it in your plugins page, and lets you activate/deactivate it independently.
+
+**The `Requires Plugins: woocommerce` line** tells WordPress this plugin depends on WooCommerce. If WooCommerce is deactivated, WordPress will warn you that this plugin's dependency is missing. This is a WordPress 6.5+ feature and it's worth using.
+
+**Keep it focused.** One plugin for all your store's custom tweaks is fine. Don't create a separate plugin for each tweak — that's just as messy as pasting snippets everywhere. But also don't let one plugin grow into a thousand-line monster. If a customization becomes complex enough to need its own settings page, it's probably outgrowing the "custom plugin" model and should be evaluated as a real development project.

@@ -1,0 +1,16 @@
+---
+title: "Intermittent & Ghost Issues"
+description: "It happens sometimes. You can't reproduce it. Everything \"should\" work."
+sidebar:
+  order: 310
+---
+
+import Callout from '@components/Callout.astro';
+
+Intermittent issues are the hardest because conflict testing may not catch them. The cause is usually **dynamic**: caching serving stale data, optimization plugins interfering with AJAX, server performance under load, WP-Cron collisions, SSL renewal gaps, CDN differences between cached/uncached requests, or browser caching on the customer's end.
+
+**Diagnostic toolkit:** Disable caching/optimization plugins first. Check WooCommerce → Status → Logs for errors with timestamps — correlate with reported issue times. Use browser dev tools (Console + Network tabs). Install Query Monitor. Check Settings → Permalinks → Save for routing issues. And document the pattern — time of day, specific product, specific browser. Intermittent issues are solved by pattern recognition.
+
+<Callout type="edge" label="Edge case">
+**wp-config.php orphans:** Caching and security plugins that wrote constants to wp-config.php leave those constants behind when deactivated. This orphaned code runs before plugins load, so conflict testing can't catch it. If you recently removed such a plugin, check wp-config.php manually.
+</Callout>

@@ -1,0 +1,33 @@
+---
+title: "Product Bundles"
+description: "Kits and sets with real stock tracking. Unlike Add-Ons, inventory actually deducts per component. Unlike Grouped, there's a single cart item and a bundle price."
+sidebar:
+  order: 18
+---
+
+import Friction from '@components/Friction.astro';
+import Callout from '@components/Callout.astro';
+
+<Friction level={3} />
+
+Product Bundles is where WooCommerce starts getting powerful — and where the setup complexity meaningfully increases. A bundle is a collection of products sold together as one item, where each component is a real product with real stock that gets deducted when the bundle sells.
+
+A skincare starter kit: cleanser + toner + moisturizer. When someone buys the kit, all three products deduct from their individual stock. If the toner runs out, the entire bundle becomes unavailable. This is the key behavioral difference from Grouped products (which are just a display wrapper) and from Add-Ons (which don't track stock).
+
+**Pricing modes:** You can price a bundle as a single price ("The kit is $45") or as individually-priced components ("each item keeps its own price, shown as a subtotal"). The first mode is simpler; the second is useful for showing customers they're getting a deal.
+
+**Assembled vs. unassembled shipping:** An assembled bundle ships as one package — the weight and dimensions are the bundle's, not the sum of components. An unassembled bundle ships each item separately — useful when components come from different warehouses or have different shipping requirements.
+
+**Where merchants get stuck:**
+
+The "insufficient stock" error on bundles is one of the most confusing support cases. The bundle page says available, the customer tries to buy, and the cart throws an error. What happened? Usually: one of the bundled products has stock = 1, but it's also sold individually, and someone bought it between the page load and the checkout. The bundle's availability check happens at different times than the individual product's stock display.
+
+Optional bundled items add another layer. You can let customers choose which components to include. This is great for "build your own" kits but it means your stock calculations now depend on customer choices, and the bundle price may fluctuate.
+
+<Callout type="tip" label="Bundles vs Grouped vs Composite">
+**Grouped:** "Here are related products, buy whichever ones you want." No combined price. No stock logic. Display only.
+
+**Bundles:** "This is a kit. Buy the whole thing (or select from these options). Stock tracks per component." One cart item, one price, real inventory management.
+
+**Composite:** "Build your product step by step. Pick a base, then a component, then another." Multi-step configuration with dependencies between steps. See section 1.9.
+</Callout>

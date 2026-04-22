@@ -1,0 +1,317 @@
+/* ═══════════════════════════════════════════════════════════
+   Field Guide for WooCommerce — design system
+   Ported from the HTML prototype (2026-04-22).
+   Typography: Newsreader (serif headings), Archivo (body), Commit Mono (meta/code)
+   ═══════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Commit+Mono:wght@400;500&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+/* ────────────────────────────────────────────────────────────
+   Starlight theme overrides — light + dark
+   ──────────────────────────────────────────────────────────── */
+:root {
+  /* Core palette */
+  --fg-ink: #1c1917;
+  --fg-paper: #fafaf9;
+  --fg-paper-warm: #f5f5f0;
+  --fg-mid: #78716c;
+  --fg-light: #a8a29e;
+  --fg-border: #e7e5e4;
+  --fg-border-strong: #d6d3d1;
+
+  /* Accent palette */
+  --fg-purple: #7c3aed;
+  --fg-purple-bg: #f5f3ff;
+  --fg-amber: #b45309;
+  --fg-amber-bg: #fffbeb;
+  --fg-rose: #be123c;
+  --fg-rose-bg: #fff1f2;
+  --fg-teal: #0f766e;
+  --fg-teal-bg: #f0fdfa;
+  --fg-blue: #1d4ed8;
+  --fg-blue-bg: #eff6ff;
+
+  /* Starlight variables */
+  --sl-font: 'Archivo', system-ui, sans-serif;
+  --sl-font-mono: 'Commit Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sl-color-accent: var(--fg-purple);
+  --sl-color-accent-low: var(--fg-purple-bg);
+  --sl-color-accent-high: #5b21b6;
+  --sl-color-text: var(--fg-ink);
+  --sl-color-text-accent: var(--fg-purple);
+  --sl-color-bg: var(--fg-paper);
+  --sl-color-bg-nav: var(--fg-paper);
+  --sl-color-bg-sidebar: var(--fg-paper);
+  --sl-color-hairline: var(--fg-border);
+  --sl-color-hairline-light: var(--fg-border);
+  --sl-text-base: 17px;
+  --sl-line-height: 1.72;
+  --sl-content-width: 52rem;
+}
+
+/* Dark mode — warm, paper-inverted */
+:root[data-theme='dark'] {
+  --fg-ink: #f5f5f0;
+  --fg-paper: #1c1917;
+  --fg-paper-warm: #292524;
+  --fg-mid: #a8a29e;
+  --fg-light: #78716c;
+  --fg-border: #292524;
+  --fg-border-strong: #44403c;
+
+  --fg-purple-bg: #2e1065;
+  --fg-amber-bg: #451a03;
+  --fg-rose-bg: #4c0519;
+  --fg-teal-bg: #042f2e;
+  --fg-blue-bg: #172554;
+
+  --sl-color-accent: #a78bfa;
+  --sl-color-accent-low: #2e1065;
+  --sl-color-accent-high: #ddd6fe;
+  --sl-color-text: var(--fg-ink);
+  --sl-color-bg: var(--fg-paper);
+  --sl-color-bg-nav: var(--fg-paper);
+  --sl-color-bg-sidebar: var(--fg-paper);
+}
+
+/* ────────────────────────────────────────────────────────────
+   Typography
+   ──────────────────────────────────────────────────────────── */
+body {
+  font-family: var(--sl-font);
+  font-size: var(--sl-text-base);
+  line-height: var(--sl-line-height);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--fg-purple);
+  color: white;
+}
+
+/* Serif display for H1 & H2; H3+ stays sans for scan-ability */
+.sl-markdown-content h1,
+.sl-markdown-content h2 {
+  font-family: 'Newsreader', serif;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.sl-markdown-content h1 {
+  font-size: clamp(2.25rem, 4vw, 3rem);
+  line-height: 1.1;
+  font-weight: 600;
+}
+
+.sl-markdown-content h1 em {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.sl-markdown-content h2 {
+  font-size: 1.75rem;
+  line-height: 1.2;
+  margin-top: 2.5rem;
+}
+
+.sl-markdown-content h3 {
+  font-family: 'Newsreader', serif;
+  font-size: 1.4rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin-top: 2rem;
+}
+
+.sl-markdown-content p {
+  font-size: 1.0625rem; /* 17px */
+  line-height: 1.72;
+}
+
+.sl-markdown-content strong {
+  font-weight: 600;
+}
+
+/* Inline code */
+.sl-markdown-content :not(pre) > code {
+  font-family: var(--sl-font-mono);
+  font-size: 0.875em;
+  background: var(--fg-paper-warm);
+  border: 1px solid var(--fg-border);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+/* Small-caps eyebrow used on the cover */
+.fg-eyebrow {
+  font-family: var(--sl-font-mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--fg-mid);
+}
+
+/* ────────────────────────────────────────────────────────────
+   Friction indicator (chip + dots)
+   ──────────────────────────────────────────────────────────── */
+.fg-friction {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--sl-font-mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 100px;
+  margin: 0 0 1.25rem;
+  font-weight: 500;
+}
+
+.fg-friction-1 { background: #dcfce7; color: #166534; }
+.fg-friction-2 { background: #fef9c3; color: #854d0e; }
+.fg-friction-3 { background: #fed7aa; color: #9a3412; }
+.fg-friction-4 { background: #fecaca; color: #991b1b; }
+.fg-friction-5 { background: #fecdd3; color: #9f1239; }
+
+:root[data-theme='dark'] .fg-friction-1 { background: #052e16; color: #86efac; }
+:root[data-theme='dark'] .fg-friction-2 { background: #422006; color: #fde047; }
+:root[data-theme='dark'] .fg-friction-3 { background: #431407; color: #fdba74; }
+:root[data-theme='dark'] .fg-friction-4 { background: #450a0a; color: #fca5a5; }
+:root[data-theme='dark'] .fg-friction-5 { background: #4c0519; color: #fda4af; }
+
+.fg-friction-dots {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.fg-friction-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.25;
+}
+
+.fg-friction-dot.filled { opacity: 1; }
+
+/* ────────────────────────────────────────────────────────────
+   Callout boxes
+   ──────────────────────────────────────────────────────────── */
+.fg-callout {
+  padding: 20px 24px;
+  border-radius: 6px;
+  margin: 1.5rem 0;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.fg-callout > :first-child {
+  margin-top: 0;
+}
+
+.fg-callout > :last-child {
+  margin-bottom: 0;
+}
+
+.fg-callout p {
+  font-size: 15px;
+  line-height: 1.65;
+  margin: 0.5rem 0;
+}
+
+.fg-callout-label {
+  font-family: var(--sl-font-mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.fg-callout-field { background: var(--fg-teal-bg); border-left: 3px solid var(--fg-teal); }
+.fg-callout-field .fg-callout-label { color: var(--fg-teal); }
+
+.fg-callout-edge { background: var(--fg-amber-bg); border-left: 3px solid var(--fg-amber); }
+.fg-callout-edge .fg-callout-label { color: var(--fg-amber); }
+
+.fg-callout-gap { background: var(--fg-rose-bg); border-left: 3px solid var(--fg-rose); }
+.fg-callout-gap .fg-callout-label { color: var(--fg-rose); }
+
+.fg-callout-tip { background: var(--fg-purple-bg); border-left: 3px solid var(--fg-purple); }
+.fg-callout-tip .fg-callout-label { color: var(--fg-purple); }
+
+.fg-callout-info { background: var(--fg-blue-bg); border-left: 3px solid var(--fg-blue); }
+.fg-callout-info .fg-callout-label { color: var(--fg-blue); }
+
+:root[data-theme='dark'] .fg-callout-field .fg-callout-label { color: #5eead4; }
+:root[data-theme='dark'] .fg-callout-edge .fg-callout-label { color: #fcd34d; }
+:root[data-theme='dark'] .fg-callout-gap .fg-callout-label { color: #fda4af; }
+:root[data-theme='dark'] .fg-callout-tip .fg-callout-label { color: #c4b5fd; }
+:root[data-theme='dark'] .fg-callout-info .fg-callout-label { color: #93c5fd; }
+
+/* ────────────────────────────────────────────────────────────
+   Stock table (and other GFM tables) styling
+   ──────────────────────────────────────────────────────────── */
+.sl-markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 14px;
+}
+
+.sl-markdown-content th {
+  font-family: var(--sl-font-mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--fg-mid);
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--fg-border-strong);
+  font-weight: 500;
+}
+
+.sl-markdown-content td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--fg-border);
+  vertical-align: top;
+}
+
+.sl-markdown-content tr:last-child td {
+  border-bottom: none;
+}
+
+/* Inline stock-value hinting — used in the stock cheat-sheet table. */
+.stock-yes     { color: var(--fg-teal);   font-weight: 600; }
+.stock-no      { color: var(--fg-rose);   font-weight: 600; }
+.stock-partial { color: var(--fg-amber);  font-weight: 600; }
+
+:root[data-theme='dark'] .stock-yes     { color: #5eead4; }
+:root[data-theme='dark'] .stock-no      { color: #fda4af; }
+:root[data-theme='dark'] .stock-partial { color: #fcd34d; }
+
+/* ────────────────────────────────────────────────────────────
+   Horizontal rule
+   ──────────────────────────────────────────────────────────── */
+.sl-markdown-content hr {
+  border: none;
+  border-top: 1px solid var(--fg-border);
+  margin: 3rem 0;
+}
+
+/* ────────────────────────────────────────────────────────────
+   Landing / splash overrides — make the hero feel like the cover
+   ──────────────────────────────────────────────────────────── */
+.hero h1 {
+  font-family: 'Newsreader', serif;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.hero .tagline {
+  font-family: var(--sl-font);
+  color: var(--fg-mid);
+  line-height: 1.7;
+}

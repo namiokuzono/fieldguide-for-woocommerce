@@ -1,0 +1,81 @@
+---
+import ArticleLayout from '@layouts/ArticleLayout.astro';
+import { getCollection, render } from 'astro:content';
+import { getPart } from '@data/parts';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('guide');
+  return entries
+    .filter((e) => !e.id.endsWith('/index'))
+    .map((entry) => ({
+      params: { slug: entry.id },
+      props: { entry },
+    }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+// Part context
+const partSlug = entry.id.split('/')[0];
+const part = getPart(partSlug);
+
+// Reading time (approximate — body property is raw MDX source)
+const rawBody = entry.body ?? '';
+const wordCount = rawBody.split(/\s+/).filter(Boolean).length;
+const readingTime = Math.max(1, Math.ceil(wordCount / 220));
+
+// Extract friction level from the MDX body if present, e.g. `<Friction level={3} />`
+const frictionMatch = rawBody.match(/<Friction\s+level=\{(\d)\}/);
+const frictionLevel = frictionMatch
+  ? (parseInt(frictionMatch[1]!, 10) as 1 | 2 | 3 | 4 | 5)
+  : undefined;
+
+// Section number — we can compute from sidebar.order (e.g. 11 → "1.1", 116 → "1.16")
+const orderNum = entry.data.sidebar?.order ?? entry.data.order;
+let sectionNumber: string | undefined;
+if (orderNum !== undefined) {
+  const major = Math.floor(orderNum / 10);
+  const minor = orderNum % 10 === 0 ? Math.floor(orderNum / 10) : orderNum - major * 10;
+  // Handle 1.10+ where order was 100-160
+  if (orderNum >= 100) {
+    const partMajor = 1;
+    const sectionMinor = orderNum / 10;
+    sectionNumber = `${partMajor}.${sectionMinor}`;
+  } else {
+    sectionNumber = `${major}.${minor}`;
+  }
+}
+
+// Prev / next within this part (skip part-index entries)
+const siblings = (await getCollection('guide'))
+  .filter((e) => e.id.startsWith(`${partSlug}/`) && !e.id.endsWith('/index'))
+  .sort(
+    (a, b) =>
+      (a.data.sidebar?.order ?? a.data.order ?? 999) -
+      (b.data.sidebar?.order ?? b.data.order ?? 999)
+  );
+const currentIdx = siblings.findIndex((e) => e.id === entry.id);
+const prev =
+  currentIdx > 0
+    ? { slug: siblings[currentIdx - 1]!.id, title: siblings[currentIdx - 1]!.data.title }
+    : null;
+const next =
+  currentIdx < siblings.length - 1
+    ? { slug: siblings[currentIdx + 1]!.id, title: siblings[currentIdx + 1]!.data.title }
+    : null;
+---
+
+<ArticleLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  part={part}
+  sectionNumber={sectionNumber}
+  readingTime={readingTime}
+  frictionLevel={frictionLevel}
+  prev={prev}
+  next={next}
+  entryId={entry.id}
+>
+  <Content />
+</ArticleLayout>

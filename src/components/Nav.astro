@@ -1,0 +1,26 @@
+---
+const path = Astro.url.pathname;
+const isHome = path === '/' || path === '';
+---
+
+<header class="site-nav" data-home={isHome}>
+  <a href="/" class="site-title">
+    <span class="title-short">Field Guide</span>
+    <span class="title-long">Field Guide for WooCommerce</span>
+  </a>
+  <nav aria-label="Primary">
+    <a href="/browse/" class:list={['nav-link', { current: path.startsWith('/browse') }]}>
+      Browse
+    </a>
+    <a href="/about/" class:list={['nav-link', { current: path.startsWith('/about') }]}>
+      About
+    </a>
+    <a
+      href="https://github.com/namiokuzono/fieldguide-for-woocommerce"
+      class="nav-link"
+      rel="external"
+    >
+      GitHub
+    </a>
+  </nav>
+</header>

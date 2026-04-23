@@ -1,0 +1,34 @@
+---
+/**
+ * Marks a developer-depth zone inside an article.
+ *
+ * The structural convention: merchant-friendly lede at the top of each
+ * section; deeper mechanics and code wrapped here at the bottom. Merchants
+ * who don't need it can stop reading at the boundary.
+ *
+ * Usage in MDX:
+ *   import ForDevelopers from '@components/ForDevelopers.astro';
+ *   <ForDevelopers>
+ *     ### Hooks you'll want
+ *     ```php
+ *     add_action( 'woocommerce_...', fn() => ... );
+ *     ```
+ *   </ForDevelopers>
+ */
+interface Props {
+  title?: string;
+  subtitle?: string;
+}
+
+const { title = 'For developers', subtitle } = Astro.props;
+---
+
+<section class="for-devs">
+  <header class="for-devs-header">
+    <span class="for-devs-label">{title}</span>
+    {subtitle && <span class="for-devs-subtitle">{subtitle}</span>}
+  </header>
+  <div class="for-devs-body">
+    <slot />
+  </div>
+</section>

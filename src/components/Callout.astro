@@ -1,12 +1,11 @@
 ---
 /**
- * Callout box — five variants matching the HTML prototype:
- *   field → teal   (From the field)
- *   edge  → amber  (Edge case)
- *   gap   → rose   (Known gap)
- *   tip   → purple (Tip / decision)
- *   info  → blue   (General info)
- * Styled in src/styles/custom.css.
+ * Soft editorial callout card — magazine sidebar, not docs aside.
+ *   field → "From the field"     — anecdotes from real support cases
+ *   edge  → "Edge case"          — unusual inputs
+ *   gap   → "Known gap"          — things WooCommerce doesn't handle
+ *   tip   → "Worth knowing"      — insights / shortcuts
+ *   info  → "Note"               — general clarification
  */
 interface Props {
   type: 'field' | 'edge' | 'gap' | 'tip' | 'info';
@@ -19,8 +18,8 @@ const defaultLabels: Record<string, string> = {
   field: 'From the field',
   edge: 'Edge case',
   gap: 'Known gap',
-  tip: 'Tip',
-  info: 'Info',
+  tip: 'Worth knowing',
+  info: 'Note',
 };
 
 const text = label ?? defaultLabels[type];
@@ -28,5 +27,5 @@ const text = label ?? defaultLabels[type];
 
 <aside class={`fg-callout fg-callout-${type}`}>
   {text && <span class="fg-callout-label">{text}</span>}
-  <slot />
+  <div class="fg-callout-body"><slot /></div>
 </aside>

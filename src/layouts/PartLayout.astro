@@ -1,0 +1,47 @@
+---
+import BookLayout from './BookLayout.astro';
+import type { PartMeta } from '@data/parts';
+
+interface Props {
+  part: PartMeta;
+  entries: Array<{ slug: string; title: string; description?: string }>;
+}
+
+const { part, entries } = Astro.props;
+---
+
+<BookLayout
+  title={part.title}
+  description={part.subtitle}
+  pageClass="is-part"
+>
+  <article class="part-index">
+    <header class="part-header">
+      <div class="part-eyebrow">
+        <span class="part-roman">{part.numberRoman}</span>
+        <span class="part-number">Part {part.number}</span>
+      </div>
+      <h1 class="part-title">{part.title}</h1>
+      <p class="part-subtitle">{part.subtitle}</p>
+      <p class="part-audience">{part.forWhom}</p>
+    </header>
+
+    <ol class="part-contents">
+      {
+        entries.map((entry, i) => (
+          <li>
+            <a href={`/${entry.slug}/`}>
+              <span class="entry-num">{String(i + 1).padStart(2, '0')}</span>
+              <span class="entry-body">
+                <span class="entry-title">{entry.title}</span>
+                {entry.description && (
+                  <span class="entry-description">{entry.description}</span>
+                )}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </article>
+</BookLayout>

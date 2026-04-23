@@ -1,0 +1,67 @@
+---
+import BookLayout from '@layouts/BookLayout.astro';
+import { PARTS } from '@data/parts';
+import { getCollection } from 'astro:content';
+
+const all = await getCollection('guide');
+
+const byPart = PARTS.map((part) => ({
+  part,
+  entries: all
+    .filter((e) => e.id.startsWith(`${part.slug}/`) && !e.id.endsWith('/index'))
+    .sort(
+      (a, b) =>
+        (a.data.sidebar?.order ?? a.data.order ?? 999) -
+        (b.data.sidebar?.order ?? b.data.order ?? 999)
+    ),
+}));
+---
+
+<BookLayout
+  title="Browse"
+  description="Every section in the Field Guide, grouped by theme."
+  pageClass="is-browse"
+>
+  <article class="browse">
+    <header class="browse-header">
+      <p class="eyebrow">Contents</p>
+      <h1>Browse</h1>
+      <p class="browse-lede">Every section in the guide, grouped by theme.</p>
+    </header>
+
+    {
+      byPart.map(({ part, entries }) => (
+        <section class="browse-part">
+          <header class="browse-part-header">
+            <div class="browse-part-eyebrow">
+              <span class="part-roman">{part.numberRoman}</span>
+              <span class="part-number">Part {part.number}</span>
+            </div>
+            <h2>
+              <a href={`/${part.slug}/`}>{part.title}</a>
+            </h2>
+            <p class="browse-part-subtitle">{part.subtitle}</p>
+          </header>
+
+          <ol class="browse-entries">
+            {entries.map((entry, i) => (
+              <li>
+                <a href={`/${entry.id}/`}>
+                  <span class="entry-num">{String(i + 1).padStart(2, '0')}</span>
+                  <span class="entry-body">
+                    <span class="entry-title">{entry.data.title}</span>
+                    {entry.data.description && (
+                      <span class="entry-description">
+                        {entry.data.description}
+                      </span>
+                    )}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))
+    }
+  </article>
+</BookLayout>

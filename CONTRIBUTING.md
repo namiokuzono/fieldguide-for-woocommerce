@@ -59,7 +59,32 @@ as an H1. Use H2 (`##`) for major subsections, H3 for finer structure.
 <Friction level={3} />
 ```
 
-1 = trivial to get right, 5 = genuinely hard / commonly broken.
+Humanised labels render automatically:
+
+| Level | Label                         |
+|-------|-------------------------------|
+| 1     | Easy — anyone can do this     |
+| 2     | Straightforward               |
+| 3     | Takes a weekend               |
+| 4     | Get help if you are new       |
+| 5     | Hire a developer              |
+
+Override with `label="..."` if a specific section needs different wording.
+
+**For developers zone** — wrap code-heavy content at the end of a section:
+
+```mdx
+import ForDevelopers from '@components/ForDevelopers.astro';
+
+<ForDevelopers>
+  Hooks, filters, SQL, and anything that makes a merchant's eyes glaze
+  over. Goes here, at the end.
+</ForDevelopers>
+```
+
+The convention: the lede of every section reads for merchants. Developer
+depth lives behind `<ForDevelopers>`, clearly marked as a separate zone.
+This lets all three audiences read the same URL.
 
 **Callouts** — pick the right type:
 

@@ -1,0 +1,109 @@
+---
+import BookLayout from '@layouts/BookLayout.astro';
+import { PARTS } from '@data/parts';
+import { getCollection } from 'astro:content';
+
+const all = await getCollection('guide');
+
+function countSections(partSlug: string) {
+  return all.filter(
+    (e) => e.id.startsWith(`${partSlug}/`) && !e.id.endsWith('/index')
+  ).length;
+}
+
+const totalSections = all.filter((e) => !e.id.endsWith('/index')).length;
+
+// Pull a "start here" recommendation — the first section of each part
+const startHere = PARTS.map((part) => {
+  const first = all
+    .filter((e) => e.id.startsWith(`${part.slug}/`) && !e.id.endsWith('/index'))
+    .sort(
+      (a, b) =>
+        (a.data.sidebar?.order ?? a.data.order ?? 999) -
+        (b.data.sidebar?.order ?? b.data.order ?? 999)
+    )[0];
+  return { part, entry: first };
+}).filter((x) => x.entry);
+---
+
+<BookLayout
+  title="Field Guide for WooCommerce"
+  description="The complete operational playbook that should ship with WooCommerce but doesn't exist — written for merchants, agencies, and developers."
+  pageClass="is-home"
+>
+  <section class="cover">
+    <p class="cover-eyebrow">A Field Guide</p>
+    <h1 class="cover-title">
+      Field Guide for <em>WooCommerce</em>
+    </h1>
+    <p class="cover-lede">
+      The complete operational playbook that should ship with WooCommerce but
+      doesn't exist. Every product type, every tax scenario, every shipping
+      configuration, every edge case — how things actually work, and what to
+      do when they don't.
+    </p>
+    <p class="cover-audience">
+      Written for merchants, agencies, and developers. Take what you need —
+      it's all yours under a
+      <a href="https://creativecommons.org/licenses/by/4.0/" rel="external">
+        Creative Commons license</a
+      >.
+    </p>
+    <div class="cover-actions">
+      <a href="/browse/" class="cover-cta">Start reading</a>
+      <a href="/about/" class="cover-cta-ghost">What this is</a>
+    </div>
+  </section>
+
+  <section class="parts-overview">
+    <div class="parts-overview-header">
+      <p class="eyebrow">Contents</p>
+      <h2>Five parts, {totalSections} sections</h2>
+    </div>
+
+    <ol class="parts-list">
+      {
+        PARTS.map((part) => (
+          <li class="parts-list-item">
+            <a href={`/${part.slug}/`} class="parts-list-link">
+              <span class="parts-list-roman">{part.numberRoman}</span>
+              <span class="parts-list-body">
+                <span class="parts-list-title">{part.title}</span>
+                <span class="parts-list-sub">{part.subtitle}</span>
+                <span class="parts-list-meta">
+                  {countSections(part.slug)} sections · {part.forWhom}
+                </span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="start-here">
+    <div class="start-here-header">
+      <p class="eyebrow">Start here</p>
+      <h2>One way in</h2>
+      <p class="start-here-lede">
+        If you're new to WooCommerce — or just dropping by — the first section
+        of each part is a soft landing.
+      </p>
+    </div>
+    <ul class="start-here-list">
+      {
+        startHere.map(({ part, entry }) => (
+          <li>
+            <a href={`/${entry!.id}/`}>
+              <span class="start-here-part">{part.title}</span>
+              <span class="start-here-title">{entry!.data.title}</span>
+              {entry!.data.description && (
+                <span class="start-here-desc">{entry!.data.description}</span>
+              )}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</BookLayout>

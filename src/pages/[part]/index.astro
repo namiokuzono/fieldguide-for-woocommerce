@@ -1,0 +1,32 @@
+---
+import PartLayout from '@layouts/PartLayout.astro';
+import { PARTS, getPart } from '@data/parts';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  return PARTS.map((p) => ({ params: { part: p.slug } }));
+}
+
+const { part: partSlug } = Astro.params;
+const part = getPart(partSlug!);
+
+if (!part) {
+  throw new Error(`Unknown part: ${partSlug}`);
+}
+
+const all = await getCollection('guide');
+const entries = all
+  .filter((e) => e.id.startsWith(`${part.slug}/`) && !e.id.endsWith('/index'))
+  .sort(
+    (a, b) =>
+      (a.data.sidebar?.order ?? a.data.order ?? 999) -
+      (b.data.sidebar?.order ?? b.data.order ?? 999)
+  )
+  .map((e) => ({
+    slug: e.id,
+    title: e.data.title,
+    description: e.data.description,
+  }));
+---
+
+<PartLayout part={part} entries={entries} />

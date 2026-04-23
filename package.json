@@ -1,7 +1,7 @@
 {
   "name": "fieldguide-for-woocommerce",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Field Guide for WooCommerce — an open, community-maintained operational playbook.",
   "scripts": {
@@ -12,11 +12,11 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/starlight": "~0.37.7",
+    "@astrojs/mdx": "^4.3.0",
+    "@astrojs/sitemap": "3.6.0",
     "astro": "^5.5.0",
+    "astro-pagefind": "^1.8.0",
+    "pagefind": "^1.3.0",
     "sharp": "^0.33.5"
-  },
-  "overrides": {
-    "@astrojs/sitemap": "3.6.0"
   }
 }

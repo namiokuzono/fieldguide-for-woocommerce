@@ -1,0 +1,100 @@
+---
+import BookLayout from './BookLayout.astro';
+import Friction from '@components/Friction.astro';
+import type { PartMeta } from '@data/parts';
+
+interface Props {
+  title: string;
+  description?: string;
+  part?: PartMeta;
+  sectionNumber?: string;
+  readingTime?: number;
+  frictionLevel?: 1 | 2 | 3 | 4 | 5;
+  prev?: { slug: string; title: string } | null;
+  next?: { slug: string; title: string } | null;
+  entryId: string;
+}
+
+const {
+  title,
+  description,
+  part,
+  sectionNumber,
+  readingTime,
+  frictionLevel,
+  prev,
+  next,
+  entryId,
+} = Astro.props;
+
+const repoBase = 'https://github.com/namiokuzono/fieldguide-for-woocommerce';
+const editUrl = `${repoBase}/edit/main/src/content/guide/${entryId}.mdx`;
+const sourceUrl = `${repoBase}/blob/main/src/content/guide/${entryId}.mdx?plain=1`;
+---
+
+<BookLayout title={title} description={description} pageClass="is-article">
+  <article class="article">
+    <header class="article-header">
+      {
+        part && (
+          <a href={`/${part.slug}/`} class="article-part">
+            <span class="part-roman">{part.numberRoman}</span>
+            <span class="part-title">{part.title}</span>
+          </a>
+        )
+      }
+
+      <h1 class="article-title">{title}</h1>
+      {description && <p class="article-subtitle">{description}</p>}
+
+      <div class="article-meta">
+        {sectionNumber && <span class="meta-item">§ {sectionNumber}</span>}
+        {readingTime && <span class="meta-item">{readingTime} min read</span>}
+        {
+          frictionLevel !== undefined && (
+            <span class="meta-item meta-friction">
+              <Friction level={frictionLevel} />
+            </span>
+          )
+        }
+      </div>
+    </header>
+
+    <div class="article-body" data-pagefind-body>
+      <slot />
+    </div>
+
+    <footer class="article-footer">
+      <div class="article-actions">
+        <a href={editUrl} rel="external">Edit this page</a>
+        <span class="divider">·</span>
+        <a href={sourceUrl} rel="external">View source</a>
+        <span class="divider">·</span>
+        <button type="button" class="link-button" onclick="window.print()">Print</button>
+      </div>
+
+      {
+        (prev || next) && (
+          <nav class="article-nav" aria-label="Previous and next section">
+            {prev ? (
+              <a href={`/${prev.slug}/`} class="nav-prev" rel="prev">
+                <span class="nav-direction">← Previous</span>
+                <span class="nav-title">{prev.title}</span>
+              </a>
+            ) : (
+              <span />
+            )}
+            {next ? (
+              <a href={`/${next.slug}/`} class="nav-next" rel="next">
+                <span class="nav-direction">Next →</span>
+                <span class="nav-title">{next.title}</span>
+              </a>
+            ) : (
+              <span />
+            )}
+          </nav>
+        )
+      }
+    </footer>
+  </article>
+</BookLayout>

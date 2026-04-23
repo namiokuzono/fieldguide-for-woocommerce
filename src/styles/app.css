@@ -996,14 +996,15 @@ body.is-about main {
   line-height: 1;
   margin: 0;
 }
-.about .lede {
+.about-body > p:first-child {
   font-family: var(--serif);
   font-size: 1.375rem;
   line-height: 1.5;
   color: var(--ink-soft);
   margin: 0 0 2rem;
 }
-.about p { margin: 0 0 1.25rem; font-size: 1.125rem; line-height: 1.72; }
+.about p,
+.about-body p { margin: 0 0 1.25rem; font-size: 1.125rem; line-height: 1.72; }
 .about h2 {
   font-family: var(--serif);
   font-weight: 500;

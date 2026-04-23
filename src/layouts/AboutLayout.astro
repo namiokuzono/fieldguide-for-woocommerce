@@ -1,0 +1,22 @@
+---
+import BookLayout from './BookLayout.astro';
+
+/**
+ * Thin wrapper around BookLayout for MDX pages (currently just /about/).
+ * Reads frontmatter, renders the About shell, slots the MDX body inside.
+ */
+const { frontmatter } = Astro.props;
+const { title, headline, eyebrow = 'About', description, pageClass = 'is-about' } = frontmatter;
+---
+
+<BookLayout title={title} description={description} pageClass={pageClass}>
+  <article class="about">
+    <header class="about-header">
+      <p class="eyebrow">{eyebrow}</p>
+      <h1>{headline ?? title}</h1>
+    </header>
+    <div class="about-body">
+      <slot />
+    </div>
+  </article>
+</BookLayout>

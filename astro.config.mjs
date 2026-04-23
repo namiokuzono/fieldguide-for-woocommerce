@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import pagefind from 'astro-pagefind';
 
 export default defineConfig({
-  site: 'https://fieldguide.example.com',
+  site: 'https://wcfield.guide',
   integrations: [mdx(), sitemap(), pagefind()],
   markdown: {
     syntaxHighlight: 'shiki',

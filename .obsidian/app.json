@@ -1,3 +1,9 @@
 {
-  "showUnsupportedFiles": true
+  "showUnsupportedFiles": true,
+  "userIgnoreFilters": [
+    "dist/",
+    "node_modules/",
+    ".astro/",
+    "pagefind/"
+  ]
 }

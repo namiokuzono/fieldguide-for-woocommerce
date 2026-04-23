@@ -31,20 +31,13 @@ const frictionLevel = frictionMatch
   ? (parseInt(frictionMatch[1]!, 10) as 1 | 2 | 3 | 4 | 5)
   : undefined;
 
-// Section number — we can compute from sidebar.order (e.g. 11 → "1.1", 116 → "1.16")
+// Section number from sidebar.order (e.g. 11 → "1.1", 116 → "1.16", 24 → "2.4").
+// Convention: first digit is part, remaining digits are section-within-part.
 const orderNum = entry.data.sidebar?.order ?? entry.data.order;
 let sectionNumber: string | undefined;
 if (orderNum !== undefined) {
-  const major = Math.floor(orderNum / 10);
-  const minor = orderNum % 10 === 0 ? Math.floor(orderNum / 10) : orderNum - major * 10;
-  // Handle 1.10+ where order was 100-160
-  if (orderNum >= 100) {
-    const partMajor = 1;
-    const sectionMinor = orderNum / 10;
-    sectionNumber = `${partMajor}.${sectionMinor}`;
-  } else {
-    sectionNumber = `${major}.${minor}`;
-  }
+  const str = String(orderNum);
+  sectionNumber = `${str.charAt(0)}.${str.slice(1)}`;
 }
 
 // Prev / next within this part (skip part-index entries)

@@ -1,14 +1,17 @@
 # Field Guide for WooCommerce
 
-An open, community-maintained operational playbook for WooCommerce — the
-reference that should ship with the plugin but doesn't. Product types,
-payments, shipping, tax, troubleshooting protocols, agency playbooks, and
-custom-code patterns, all in one readable place.
+An open field guide for WooCommerce — the reference that should ship with
+the plugin but doesn't. Product types, payments, shipping, tax,
+troubleshooting protocols, agency playbooks, and custom-code patterns,
+all in one readable place.
 
-Written for merchants, agencies, and developers. Every section opens in
-plain English; deeper mechanics and code live in a clearly-marked
-*For developers* zone later in the same page, so three audiences read
-the same URL without anyone feeling talked down to or locked out.
+Written for merchants, agencies, and developers alike. Every section
+opens with the shape of the thing — what it is, how it actually works —
+and deeper mechanics live in a clearly-marked *For developers* zone
+later on the same page. Three audiences, same URL.
+
+Written and maintained by [Nami Okuzono](https://nami.space). Open to
+contributions under CC BY 4.0.
 
 **Live site:** wcfield.guide
 **Repo:** <https://github.com/namiokuzono/fieldguide-for-woocommerce>

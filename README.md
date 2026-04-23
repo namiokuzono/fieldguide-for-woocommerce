@@ -10,7 +10,7 @@ plain English; deeper mechanics and code live in a clearly-marked
 *For developers* zone later in the same page, so three audiences read
 the same URL without anyone feeling talked down to or locked out.
 
-**Live site:** TBD (self-hosted; see [Deployment](#deployment))
+**Live site:** wcfield.guide
 **Repo:** <https://github.com/namiokuzono/fieldguide-for-woocommerce>
 **License:** Content is [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 Fork it, adapt it, hand it off to your clients — attribution appreciated.

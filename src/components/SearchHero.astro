@@ -1,0 +1,22 @@
+---
+/**
+ * Big landing-page search box. Wraps astro-pagefind's <Search> with our
+ * magazine styling. Pagefind builds the index at `npm run build`, so
+ * this won't function in `npm run dev` — only `npm run preview` and
+ * deployed builds.
+ */
+import { Search } from 'astro-pagefind/components';
+---
+
+<div class="search-hero">
+  <Search
+    id="hero-search"
+    className="pagefind-ui pagefind-ui--hero"
+    uiOptions={{
+      showImages: false,
+      showSubResults: true,
+      placeholder: 'Search the field guide — try "block checkout" or "shipping zones"',
+      resetStyles: false,
+    }}
+  />
+</div>

@@ -1,0 +1,114 @@
+---
+/**
+ * Header search — small icon that unfolds into a popover containing
+ * the Pagefind UI. Esc, click-outside, or clicking the icon again
+ * closes it.
+ *
+ * Like SearchHero, this only functions on built sites
+ * (`npm run preview` or deployed) — Pagefind doesn't run in dev mode.
+ */
+import { Search } from 'astro-pagefind/components';
+---
+
+<div class="search-popover" data-search-popover>
+  <button
+    type="button"
+    class="search-toggle"
+    aria-label="Search the guide"
+    aria-expanded="false"
+    aria-controls="search-popover-panel"
+    data-search-toggle
+  >
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.6"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="7" cy="7" r="5"></circle>
+      <path d="m11 11 3 3"></path>
+    </svg>
+    <span class="search-toggle-label">Search</span>
+  </button>
+
+  <div
+    id="search-popover-panel"
+    class="search-popover-panel"
+    role="dialog"
+    aria-label="Search"
+    hidden
+  >
+    <Search
+      id="popover-search"
+      className="pagefind-ui pagefind-ui--popover"
+      uiOptions={{
+        showImages: false,
+        showSubResults: true,
+        placeholder: 'Search the field guide…',
+        resetStyles: false,
+      }}
+    />
+  </div>
+</div>
+
+<script>
+  // Toggle the search popover. Lightweight vanilla JS — no framework
+  // overhead for a one-shot widget.
+  (() => {
+    const root = document.querySelector<HTMLElement>('[data-search-popover]');
+    if (!root) return;
+    const toggle = root.querySelector<HTMLButtonElement>('[data-search-toggle]');
+    const panel = root.querySelector<HTMLElement>('#search-popover-panel');
+    if (!toggle || !panel) return;
+
+    const open = () => {
+      panel.hidden = false;
+      toggle.setAttribute('aria-expanded', 'true');
+      root.classList.add('is-open');
+      // Focus the Pagefind UI input once the panel renders. Pagefind
+      // mounts its input asynchronously after page load.
+      requestAnimationFrame(() => {
+        const input = panel.querySelector<HTMLInputElement>(
+          '.pagefind-ui__search-input'
+        );
+        input?.focus();
+      });
+    };
+
+    const close = () => {
+      panel.hidden = true;
+      toggle.setAttribute('aria-expanded', 'false');
+      root.classList.remove('is-open');
+    };
+
+    toggle.addEventListener('click', () => {
+      const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+      isOpen ? close() : open();
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !panel.hidden) close();
+    });
+
+    // Close on click outside
+    document.addEventListener('click', (e) => {
+      if (panel.hidden) return;
+      if (!root.contains(e.target as Node)) close();
+    });
+
+    // Cmd/Ctrl-K to open
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        if (panel.hidden) open();
+        else close();
+      }
+    });
+  })();
+</script>

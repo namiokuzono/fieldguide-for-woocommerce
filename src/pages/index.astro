@@ -1,5 +1,6 @@
 ---
 import BookLayout from '@layouts/BookLayout.astro';
+import SearchHero from '@components/SearchHero.astro';
 import { PARTS } from '@data/parts';
 import { getCollection } from 'astro:content';
 
@@ -53,6 +54,8 @@ const startHere = PARTS.map((part) => {
       <a href="/browse/" class="cover-cta">Start reading</a>
       <a href="/about/" class="cover-cta-ghost">What this is</a>
     </div>
+
+    <SearchHero />
   </section>
 
   <section class="parts-overview">

@@ -5,8 +5,94 @@ sidebar:
   order: 33
 ---
 
-**"Variation cannot be added to cart"** is nearly 100% caused by a plugin or theme conflict. The quick path: Settings → Permalinks → Save. If that doesn't help, full conflict testing. Also verify the product actually has generated variations — not just attributes. This is the most common variable product setup mistake.
+---
 
-**Payment failures at checkout:** First question — Block Checkout or Classic? Many gateways still only support Classic. If customers see no payment options, switch to Classic as a diagnostic step. If payment works on Classic but not Block, the gateway plugin needs an update.
 
-For payment declines (form renders but payment fails), check order notes — the gateway logs the specific decline reason. Insufficient funds, expired card, fraud block — these are between the customer, their bank, and the processor, not WooCommerce.
+import Callout from '@components/Callout.astro';
+import ForDevelopers from '@components/ForDevelopers.astro';
+
+Cart and checkout failures are the most common category of WooCommerce support tickets — and also the most misdiagnosed. The pattern is almost always the same: something worked, then it stopped, and a recent plugin update or new plugin installation is within a week of when it broke. The exception is configuration errors, which usually show up immediately after setup.
+
+## "Can't add to cart"
+
+The button clicks but nothing happens, or you get a cryptic error. Nine times out of ten, this is a conflict.
+
+**Quick check first:** Settings → Permalinks → Save Changes. This regenerates WooCommerce's rewrite rules and fixes a surprising number of add-to-cart failures caused by stale URL routing — takes five seconds.
+
+**If that doesn't fix it:** Open your browser's developer console (F12 → Console) while attempting to add to cart. If you see a 403, 404, or 500 error on a request to `/?wc-ajax=add_to_cart` or `/wp-json/wc/store/v1/cart`, you're looking at either a security plugin blocking the request or a REST API problem. Common culprits: Wordfence blocking AJAX requests, Cloudflare Bot Fight Mode interfering, or a caching plugin serving stale responses to logged-in sessions.
+
+**If the console is clean:** Run conflict testing. Deactivate all plugins except WooCommerce, test, then reactivate one by one. The forum data on this is consistent — page builders (Elementor, Divi, Bricks) and add-to-cart customization plugins are the most frequent offenders. The pattern is the builder rendering the product page through its own template, which bypasses Woo's expected hooks.
+
+<Callout type="warning" label="The add-to-cart nonce problem">
+If you recently installed a caching plugin or your CDN is caching logged-in sessions, add-to-cart will fail silently. Woo's AJAX requests use a nonce that expires — a cached page has a stale nonce. Check whether the failure only affects pages that were loaded without a fresh nonce. The fix is excluding cart and product pages from caching, or disabling cache for logged-in users.
+</Callout>
+
+## "Variation cannot be added to cart"
+
+This error message is almost never what it sounds like. It's rarely a real stock or availability issue — it's almost always one of two things:
+
+**1. Variations were never generated.** Attributes don't create variations automatically. You add attributes to a variable product, but you also have to go to the Variations tab and click "Generate all variations" (or create them manually). A product with size attribute set to S/M/L/XL but no variations generated will show all options in the dropdown but add nothing to cart. This is the most common variable product setup mistake I see.
+
+**2. A plugin conflict.** Same conflict testing process as above. Pricing plugins and inventory management plugins are the most frequent cause — specifically plugins that hook `woocommerce_before_calculate_totals` at a very early priority (0 or 1) to override prices. These can stomp on variation availability logic.
+
+**Also check:** Is the specific variation actually in stock? If you're managing stock at the variation level, a single out-of-stock variation won't add, even if other variations are fine. The error message is the same either way, which is unhelpful.
+
+## Block Checkout vs Classic: the payment gateway mismatch
+
+This is responsible for a huge percentage of "no payment options showing" tickets. The short version: WooCommerce now ships with Block Checkout as the default. Many payment gateway plugins — including some popular ones — don't support it yet, or have partial support that breaks in specific configurations.
+
+**How to tell which checkout you're running:** Go to Pages → Checkout → Edit. If you see a WooCommerce Checkout block in the editor, you're on Block Checkout. If you see `[woocommerce_checkout]` shortcode, you're on Classic.
+
+**Diagnostic step:** If customers are seeing no payment methods, or payment methods appear but the form doesn't render, temporarily switch to Classic Checkout by replacing the block with the shortcode on that page. If payment works immediately, your gateway doesn't support Block Checkout yet.
+
+**The solution depends on the gateway.** Most major gateways (Stripe, PayPal, WooPayments) have Block Checkout support but you may need to update to their latest version — this is a common source of breakage after a WooCommerce update. For gateways that don't support Block at all, you stay on Classic until they catch up, or you accept Block and lose that gateway.
+
+<Callout type="tip" label="Gateways that still only work on Classic (as of 2026)">
+If a gateway plugin only hooks `woocommerce_checkout_fields`, `woocommerce_after_checkout_form`, or `woocommerce_payment_gateways` without registering a Block integration, it will silently disappear on Block Checkout. The gateway settings page in WooCommerce → Settings → Payments usually shows whether Block is supported.
+</Callout>
+
+## Cart empties unexpectedly / session loss
+
+Customers add items, go to checkout, and the cart is empty. Or the cart shows correctly until they log in, then clears. This is a session problem.
+
+**Common causes:**
+- Caching is serving the same session to multiple users or not persisting sessions for logged-in users
+- WooCommerce session table (`wp_woocommerce_sessions`) is bloated or corrupted — go to WooCommerce → Status → Tools → Clear WooCommerce session data
+- A security plugin is blocking the session cookie
+- Hosting is running PHP in a way that doesn't persist `$_SESSION` between requests (rare but it happens on some shared hosts with unusual session save handlers)
+
+**Quick diagnostic:** Can you reproduce the empty cart with caching plugins deactivated and CDN/Cloudflare bypassed? If yes, the problem is in Woo or a plugin. If no, it's caching.
+
+## Payment declines at checkout
+
+The form renders, the customer fills it out, submits, and gets a decline. This is almost never a WooCommerce problem.
+
+**Check order notes first.** Every payment attempt logs the gateway's response in the order notes. The actual decline reason is there — insufficient funds, expired card, address verification failed, fraud block. These are between the customer, their card, and their bank. WooCommerce can't fix a declined card.
+
+**If the decline message is vague or missing from order notes:** Check WooCommerce → Status → Logs, filtered to your gateway. Most gateways log detailed API responses there.
+
+**If payment is failing for everyone, not just one customer:** That's a gateway configuration issue. Check that your API keys are in live mode (not test mode), that your gateway account is fully verified and not suspended, and that your domain matches what's registered with the payment processor.
+
+<Callout type="field-note" label="From the field">
+The most common 3am ticket I see: "payment stopped working and I didn't change anything." Nine times out of ten, the API keys silently expired or the payment processor changed their webhook endpoint. Check WooCommerce → Settings → Payments → your gateway → re-save settings. Sometimes just re-saving refreshes the connection.
+</Callout>
+
+## When it's beyond WooCommerce
+
+- **Cart AJAX 403 errors that don't go away after disabling plugins:** Your host's WAF is the likely cause. Common on SiteGround, Cloudways, and WP Engine with default firewall rules. Contact hosting with the specific endpoint being blocked.
+- **Payment failures with a specific gateway that conflict testing doesn't resolve:** Open a support ticket with the gateway plugin developer, not WooCommerce. Attach the gateway log from WooCommerce → Status → Logs.
+- **Block Checkout rendering issues that persist after switching gateways:** May be a theme conflict with the Block Editor's required scripts. A developer can debug by checking for JavaScript errors on the checkout page.
+
+<ForDevelopers>
+
+## What's actually happening under the hood
+
+**The add-to-cart flow** runs through `WC_Form_Handler::add_to_cart_action()` on `wp_loaded`. It processes the `add-to-cart` query parameter, validates the product, checks stock, and fires `woocommerce_add_to_cart`. The AJAX version hits `WC_AJAX::add_to_cart()` directly. Both routes validate a nonce via `woocommerce-add-to-cart` nonce name — if the nonce fails, the item silently doesn't add.
+
+**The variation availability check** calls `WC_Product_Variable::get_available_variations()`, which checks each variation's stock status, whether it's published, and whether it matches the selected attributes. A plugin that hooks `woocommerce_get_variation_prices` or `woocommerce_variation_is_purchasable` and returns unexpected values will cause variations to appear unavailable without any error in the log.
+
+**Block Checkout and dead hooks:** The Block Checkout renders server-side via the Store API (`/wp-json/wc/store/v1/`). It does not fire `woocommerce_checkout_fields`, `woocommerce_after_checkout_form`, or the classic payment gateway registration hooks. Plugins that only hook into classic checkout hooks are invisible on Block Checkout — Woo Heartbeat's `block-dead-hook` rule specifically catches plugins registering callbacks on classic-only hooks when the store is running Block Checkout.
+
+**Cart session persistence:** Woo stores cart data in `WC_Session_Handler`, which writes to `wp_woocommerce_sessions` via a database handler. The session ID is stored in a cookie named `wp_woocommerce_session_{COOKIEHASH}`. If a CDN or caching layer strips cookies on cached responses, the session ID is lost between pages. Server-side object caching (Redis/Memcached) does not affect this — the issue is always cookie-level.
+
+</ForDevelopers>

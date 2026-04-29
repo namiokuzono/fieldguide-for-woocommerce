@@ -5,18 +5,106 @@ sidebar:
   order: 32
 ---
 
+---
+
 import Callout from '@components/Callout.astro';
+import ForDevelopers from '@components/ForDevelopers.astro';
 
-A merchant uses a third-party plugin, something breaks, and the developer says "that's a WooCommerce issue." Sometimes true. Usually not.
+A merchant uses a third-party plugin, something breaks, and the developer/support says "that's a WooCommerce issue." Sometimes they're right. Usually they're not.
 
-**The boundary:** WooCommerce provides products, orders, coupons, shipping, tax, checkout, and the REST API. If the issue is with how a third-party plugin *uses* those systems, that's the plugin developer's responsibility. WooCommerce is a platform — the integration is the plugin developer's job.
+Understanding where WooCommerce ends and third-party territory begins isn't just useful for arguing with developers — it's how you figure out who to contact and what information to bring to that conversation.
 
-**The test:** Does the issue exist with only WooCommerce active? If not, it's not WooCommerce's problem. If the plugin developer insists, ask them to submit a detailed report to the [WooCommerce GitHub repository](https://github.com/woocommerce/woocommerce/issues).
+## What WooCommerce is actually responsible for
 
-**For POD plugins** (Printful, Printify): these connect to external APIs, sync data, and handle fulfillment through their own services. If sync fails or orders don't pass through, that's their integration.
+WooCommerce provides: products and product types, orders and order statuses, coupons, shipping zones and methods, tax calculation, checkout flow (both Classic and Block), the REST API (`/wp-json/wc/`), and the Store API (`/wp-json/wc/store/v1/`).
 
-**General integration troubleshooting:** Check Tools → Site Health. Clear WooCommerce transients (WooCommerce → Status → Tools). Verify WooCommerce is current. For API-heavy plugins, ensure PHP memory is at least 512MB and time limit is 120+. Disconnect/reconnect the integration. Check WooCommerce → Status → Logs for fatal errors.
+If any of these core systems are broken with *only* WooCommerce active — no other plugins, default theme — that's a WooCommerce bug worth reporting.
 
-<Callout type="edge" label="Edge case">
-Some plugins write directly to `wp-config.php`. When you deactivate them, the changes stay — orphaned code that keeps affecting behavior. If conflict testing doesn't resolve an issue after recently removing a plugin, check wp-config.php for leftover constants.
+**Everything else is an integration.** How a plugin *uses* WooCommerce's systems, hooks, and APIs is that plugin's responsibility. WooCommerce is a platform. The integration layer belongs to whoever built the plugin.
+
+## The test that settles most arguments
+
+Does the issue exist with only WooCommerce active?
+
+1. Set up staging (never do this on live)
+2. Deactivate all plugins except WooCommerce
+3. Switch to a default theme (Twenty Twenty-Four)
+4. Reproduce the issue
+
+If the issue **exists in this state**, it's a WooCommerce problem. File a [GitHub issue](https://github.com/woocommerce/woocommerce/issues) with detailed reproduction steps.
+
+If the issue **does not exist in this state**, the cause is a plugin or theme. Reactivate things one by one until it reappears. The last thing you activated is the conflict.
+
+When you present this to a plugin developer, they can no longer say "it's WooCommerce" — you've proven it isn't. What you've found is a bug in their integration.
+
+## The most common deflections, and what they actually mean
+
+**"WooCommerce changed their hooks in the last update."**
+Sometimes true. Check the WooCommerce [changelog](https://github.com/woocommerce/woocommerce/blob/trunk/changelog.txt) for the version that broke things. If a hook was deprecated or removed, the plugin developer needs to update — this is part of maintaining a WooCommerce extension. Woo typically gives 2+ major version deprecation warnings before removing hooks.
+
+**"Your PHP/WordPress version is incompatible."**
+Check the plugin's readme for stated requirements. If your versions meet them, the developer has a bug. If you're below their minimum, update — but if you're on current PHP and WP, this is a deflection.
+
+**"WooCommerce's REST API is the issue."**
+The REST API is part of WooCommerce core. If a plugin's integration with it is broken, that's an integration problem. Ask the developer for specific API endpoints that are failing and what error responses they're receiving. If they can't provide that, they haven't actually debugged it.
+
+**"It works on our test site."**
+Almost always means they haven't tested with your specific plugin combination. Your test data from conflict testing is more credible than their internal test site — especially if you've isolated the conflict to their plugin specifically.
+
+## API-heavy integrations: a special case
+
+Plugins that connect to external services (Printful, Printify, Mailchimp, ShipStation, etc.) have two failure modes. The first is a WooCommerce integration problem (their plugin doesn't hook correctly into Woo). The second is an API/webhook problem (the external service can't reach your site, or vice versa).
+
+For API-heavy plugins, before assuming WooCommerce:
+
+1. Check the plugin's own logs (usually in its settings or in WooCommerce → Status → Logs)
+2. Verify your site's REST API is reachable: go to `yoursite.com/wp-json/` — you should see a JSON response, not an error
+3. Check if Cloudflare, a WAF, or a security plugin is blocking inbound webhook requests from the external service's IPs
+4. Test the API connection from within the plugin's settings — most have a "test connection" or "reconnect" button
+
+<Callout type="warning" label="Cloudflare and inbound integrations">
+Cloudflare's Bot Fight Mode and WAF rules are a documented source of silent failures for ShipStation, Stripe webhooks, Mailchimp, and Jetpack. The external service's requests get blocked without any error visible in WooCommerce. If you're running Cloudflare and an integration suddenly stopped working: check the Cloudflare Firewall Events log first. You're looking for blocked requests from the integration provider's IP ranges.
 </Callout>
+
+## When the issue is WooCommerce's fault
+
+It does happen. The pattern I've seen across thousands of tickets:
+
+- **Right after a Woo major version update:** If something broke the same day or same week as a WooCommerce update and conflict testing doesn't identify a plugin cause, check the GitHub issues for the specific version. Merchants are fast to report genuine regression bugs.
+- **HPOS migration issues:** High-Performance Order Storage (the newer order database format) is a known source of integration breakage. Plugins that read/write orders via `wp_posts` directly stop working when HPOS is enabled. This is a real compatibility issue — but it's the plugin developer's responsibility to support HPOS, not Woo's.
+- **Block Checkout hook removals:** Classic checkout hooks don't fire on Block Checkout. If something broke when your store switched to Block Checkout, that's a real architectural change — but again, adapting to it is the plugin developer's job.
+
+<Callout type="field-note" label="From the field">
+I've seen the same pattern hundreds of times: merchant reports a bug, plugin developer says "WooCommerce changed something," WooCommerce support says "it's the plugin," merchant is stuck in the middle. The conflict test exits this loop. Run it before you contact anyone, and lead with the results. "I reproduced this with only your plugin active alongside WooCommerce, on a default theme" is a complete bug report that's very hard to deflect.
+</Callout>
+
+## What to send when you file a bug report
+
+Whether you're reporting to WooCommerce or a plugin developer, include:
+
+- WooCommerce version, WordPress version, PHP version
+- The specific steps to reproduce the issue
+- Whether you've done conflict testing and what the result was
+- A screenshot of WooCommerce → Status → System Status
+- Any relevant log entries from WooCommerce → Status → Logs
+
+Logs are the most important thing most people skip. Enable WooCommerce logging: WooCommerce → Settings → Advanced → Logs, then reproduce the issue. The log entry often contains the exact error message that identifies the cause.
+
+<ForDevelopers>
+
+## Reading the boundary from the code side
+
+The practical way to know whose problem something is: look at which code path is failing.
+
+If the failure is in `woocommerce/includes/` or `woocommerce/src/` — and it happens with a clean install of only WooCommerce active — that's core. File a bug with a unit test case if you can.
+
+If the failure is in a third-party plugin's code that calls Woo APIs: the plugin has a bug. Common patterns:
+
+- Plugin hooks `save_post` to catch new orders — broken on HPOS stores, where orders no longer live in `wp_posts`. The correct hooks are `woocommerce_new_order` and `woocommerce_update_order`.
+- Plugin reads order meta directly from `wp_postmeta` — also broken on HPOS. Use `$order->get_meta()` instead.
+- Plugin uses `woocommerce_checkout_fields` to inject fields — works on Classic, invisible on Block. Block Checkout uses the Checkout Fields API (`__experimentalRegisterCheckoutField`).
+- Plugin calls `WC()->cart->get_cart()` during a REST API request — cart is not initialized in REST context, will return empty or throw errors.
+
+If you need to hand a developer a starting point, point them to [WooCommerce's HPOS compatibility guide](https://github.com/woocommerce/woocommerce/wiki/High-Performance-Order-Storage-Upgrade-Recipe-Book) and the [Block Checkout extensibility docs](https://github.com/woocommerce/woocommerce/blob/trunk/plugins/woocommerce-blocks/docs/). These are the two most common causes of "it stopped working after a Woo update" across the entire plugin ecosystem right now.
+
+</ForDevelopers>

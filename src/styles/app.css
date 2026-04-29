@@ -1136,6 +1136,127 @@ body.is-about main {
   background: var(--card);
 }
 
+/* ─── Search (Pagefind UI) ───────────────────────────────────────
+   Pagefind exposes CSS variables; we map them to magazine tokens. */
+
+.pagefind-ui {
+  --pagefind-ui-scale: 1;
+  --pagefind-ui-primary: var(--accent);
+  --pagefind-ui-text: var(--ink);
+  --pagefind-ui-background: var(--card);
+  --pagefind-ui-border: var(--rule);
+  --pagefind-ui-tag: var(--paper-warm);
+  --pagefind-ui-border-width: 1px;
+  --pagefind-ui-border-radius: 10px;
+  --pagefind-ui-image-border-radius: 6px;
+  --pagefind-ui-image-box-ratio: 3 / 2;
+  --pagefind-ui-font: var(--sans);
+}
+
+.pagefind-ui .pagefind-ui__form { font-size: 1rem; }
+.pagefind-ui .pagefind-ui__search-input {
+  font-family: var(--sans);
+  font-size: 1rem;
+  padding: 0.875rem 1rem 0.875rem 2.75rem;
+  background: var(--card);
+  color: var(--ink);
+}
+.pagefind-ui .pagefind-ui__search-input::placeholder {
+  color: var(--mid);
+  font-style: italic;
+}
+.pagefind-ui .pagefind-ui__results-area { margin-top: 0.75rem; }
+.pagefind-ui .pagefind-ui__result {
+  border-bottom: 1px solid var(--rule-soft);
+  padding: 0.875rem 0;
+}
+.pagefind-ui .pagefind-ui__result:last-child { border-bottom: none; }
+.pagefind-ui .pagefind-ui__result-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 1.125rem;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+}
+.pagefind-ui .pagefind-ui__result-link { color: var(--ink); text-decoration: none; }
+.pagefind-ui .pagefind-ui__result-link:hover { color: var(--accent-ink); }
+.pagefind-ui .pagefind-ui__result-excerpt {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--mid);
+  margin-top: 0.25rem;
+}
+.pagefind-ui .pagefind-ui__result-excerpt mark {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+/* Hero variant — landing page, big and centered */
+.search-hero { margin: 2.5rem 0 0; max-width: 36rem; }
+.search-hero .pagefind-ui--hero .pagefind-ui__search-input {
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  padding: 1.0625rem 1.125rem 1.0625rem 3rem;
+  border-color: var(--rule);
+  box-shadow: var(--shadow-soft);
+}
+.search-hero .pagefind-ui--hero .pagefind-ui__search-input:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+/* Popover variant — header icon + dropdown panel */
+.search-popover { position: relative; display: inline-flex; align-items: center; }
+
+.search-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mid);
+  background: transparent;
+  border: none;
+  padding: 0.25rem 0;
+  cursor: pointer;
+  line-height: 1;
+}
+.search-toggle:hover { color: var(--ink); }
+.search-toggle svg { display: block; }
+
+@media (max-width: 540px) {
+  .search-toggle-label { display: none; }
+}
+
+.search-popover-panel {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  right: 0;
+  width: min(28rem, calc(100vw - 2 * var(--gutter)));
+  max-height: 70vh;
+  overflow: auto;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(28, 21, 15, 0.12);
+  padding: 0.875rem;
+  z-index: 50;
+  animation: search-popover-in 0.16s ease-out;
+}
+
+@keyframes search-popover-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.search-popover-panel .pagefind-ui--popover .pagefind-ui__search-input {
+  font-size: 0.9375rem;
+}
+
 /* ─── Print ──────────────────────────────────────────────────────── */
 @media print {
   :root { --paper: #fff; --ink: #111; }

@@ -14,16 +14,11 @@ const isHome = path === '/' || path === '';
     <a href="/browse/" class:list={['nav-link', { current: path.startsWith('/browse') }]}>
       Browse
     </a>
+    <span class="nav-sep" aria-hidden="true">·</span>
     <a href="/about/" class:list={['nav-link', { current: path.startsWith('/about') }]}>
       About
     </a>
+    <span class="nav-sep" aria-hidden="true">·</span>
     <SearchPopover />
-    <a
-      href="https://github.com/namiokuzono/fieldguide-for-woocommerce"
-      class="nav-link"
-      rel="external"
-    >
-      GitHub
-    </a>
   </nav>
 </header>

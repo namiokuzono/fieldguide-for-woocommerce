@@ -181,7 +181,15 @@ main {
 
 .site-nav nav {
   display: flex;
-  gap: 1.5rem;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.site-nav .nav-sep {
+  color: var(--fade);
+  font-size: 0.85rem;
+  user-select: none;
+  line-height: 1;
 }
 
 .site-nav .nav-link {
@@ -1165,6 +1173,15 @@ body.is-about main {
   color: var(--mid);
   font-style: italic;
 }
+
+/* Override the browser-default blue focus ring with accent-purple
+   everywhere — applies to both hero and popover variants. */
+.pagefind-ui .pagefind-ui__search-input:focus,
+.pagefind-ui .pagefind-ui__search-input:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
 .pagefind-ui .pagefind-ui__results-area { margin-top: 0.75rem; }
 .pagefind-ui .pagefind-ui__result {
   border-bottom: 1px solid var(--rule-soft);
@@ -1202,10 +1219,7 @@ body.is-about main {
   border-color: var(--rule);
   box-shadow: var(--shadow-soft);
 }
-.search-hero .pagefind-ui--hero .pagefind-ui__search-input:focus {
-  border-color: var(--accent);
-  outline: none;
-}
+/* hero focus inherits the accent-purple ring from the base rule above */
 
 /* Popover variant — header icon + dropdown panel */
 .search-popover { position: relative; display: inline-flex; align-items: center; }
